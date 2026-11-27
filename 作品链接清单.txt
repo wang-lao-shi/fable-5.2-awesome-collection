@@ -1,0 +1,211 @@
+Fable 5.2 单文件 3D 作品导航 · 链接清单
+
+一、离线单文件（在 singles 文件夹，双击即可）
+
+- Saltline 港口射击（1.4M 神作）（Saltline）  文件：singles/01-盐线港口射击-Saltline.html  大小：1.6 MB  来源：github.com/realcodebear/saltline-fable-5.2
+- 赤龙 · 90 秒巨龙短片（Crimson Loong）  文件：singles/02-赤龙-Crimson-Loong.html  大小：1.9 MB  来源：github.com/ChetasLua/crimson-loong
+- X 光魔镜（X-Ray Mirror）  文件：singles/03-X光魔镜-X-Ray-Mirror.html  大小：18.3 MB  来源：github.com/MasterOfVFX2070/xray-mirror  注意：需要摄像头，浏览器会询问权限
+- 深渊花园 · 97KB 水世界（Abyssal Garden）  文件：singles/04-深渊花园水世界-Abyssal-Garden.html  大小：97 KB  来源：github.com/Noniv/abyssal-garden  注意：WebGPU：请用最新 Chrome / Edge
+- 黎明的房间（Room at Dawn）  文件：singles/05-黎明的房间-Room-at-Dawn.html  大小：22.9 MB  来源：github.com/Leonxlnx/room-at-dawn
+- 骑累了的鹈鹕（The Pelican, Tired of the Road）  文件：singles/06-骑累了的鹈鹕-Pelican.html  大小：309 KB  来源：github.com/ChetasLua/pelican-riding-a-bicycle
+- 一扫 · 动漫打斗片（One Sweep）  文件：singles/07-一扫动漫打斗-One-Sweep.html  大小：3.2 MB  来源：github.com/anstapnever/one-sweep
+- 哥斯拉之夜（Godzilla Nights）  文件：singles/08-哥斯拉之夜-Godzilla-Nights.html  大小：405 KB  来源：github.com/ChetasLua/godzilla-nights
+- 千峰之龙（Dragon of a Thousand Peaks）  文件：singles/09-千峰之龙-Thousand-Peaks.html  大小：1.6 MB  来源：github.com/0xCodez/thousand-peaks
+- 代码画蒙娜丽莎（Mona Lisa JS）  文件：singles/10-代码画蒙娜丽莎-Mona-Lisa.html  大小：1.0 MB  来源：github.com/ChetasLua/mona-lisa-js
+- 灯落 LANTERNFALL（LANTERNFALL）  文件：singles/11-灯落-LANTERNFALL.html  大小：4.6 MB  来源：loktar00.github.io/lanternfall
+- 动物打工人 3D 手帐（Animals at Work）  文件：singles/12-动物打工人3D手帐-Animals-at-Work.html  大小：12.4 MB  来源：xianxie6.github.io/animals-planner-2027  注意：内容存在本地浏览器，与在线版不互通
+- 云端特技 3D（Cloud Stunt 3D）  文件：singles/13-云端特技3D-Cloud-Stunt-3D.html  大小：69 KB  来源：finderchangchang.github.io/cloud-stunt-3d
+- 沙虫骑士（Worm Rider）  文件：singles/14-沙虫骑士-Worm-Rider.html  大小：1.1 MB  来源：github.com/amirmushichge/worm-rider  注意：加载稍慢，需独显更顺
+- 午夜网格 · 开放世界飙车（Midnight Grid）  文件：singles/15-午夜网格飙车-Midnight-Grid.html  大小：660 KB  来源：mikenevermiss.github.io/midnight-grid
+- 一次心跳（One Heartbeat）  文件：singles/16-一次心跳-One-Heartbeat.html  大小：556 KB  来源：clockendbader.github.io/fable-builds
+- 雷霆谷 · 恐龙追逐（Thunder Valley）  文件：singles/17-雷霆谷恐龙追逐-Thunder-Valley.html  大小：2.6 MB  来源：loktar00.github.io/llm-test-pages
+- 一笔 HITOFUDE（HITOFUDE）  文件：singles/18-一笔-HITOFUDE.html  大小：846 KB  来源：shubhu121.github.io/hitdude
+- 装机实验室（PC Build Lab）  文件：singles/19-装机实验室-PC-Build-Lab.html  大小：1.7 MB  来源：tetriss22.github.io/pc-build-lab
+- 港湾灯火大奖赛（Harbor Lights Grand Prix）  文件：singles/20-港湾灯火大奖赛-Harbor-Lights-GP.html  大小：575 KB  来源：tetriss22.github.io/harbor-gp
+
+二、中文圈热传
+
+- QQ飞车 3D：https://lf3-static.bytednsdoc.com/obj/eden-cn/nulojnulwlo/qqfeiche3d/index.html
+- 穿越火线之运输船：https://lf3-static.bytednsdoc.com/obj/eden-cn/nulojnulwlo/cf-transport-ship/transport-ship.html
+- 玩 CF：https://cf.hanyue.io
+- 英雄联盟 海克斯大乱斗：https://lol.hanyue.io/
+- 黑神话：悟空 · 虎先锋：https://www.anxiangsir.com/wukong-tiger-engine/
+- EVENSONG：https://evensong-phi.vercel.app/
+- 双人成行 · 大肥鱼版试玩：https://v25.dafeiyugame.site/
+- 鹈鹕骑自行车：https://lf3-static.bytednsdoc.com/obj/eden-cn/nulojnulwlo/pelican-bike/index.html
+
+三、在线作品（按热度排序）
+
+【游戏】
+- Starry Nightrider 星夜骑行  ♥17873  https://starrynightrider.com
+- Saltline 第一人称射击  ♥14801  https://claude.ai/artifact/BGY1SztrAYcJQHSsnHHGmp
+- Oil Paint 手绘油画风游戏  ♥7961  https://patch.gg/blendi/oil-paint
+- CROSSTOWN 纽约开放世界（早期试玩）  ♥7513  https://nyc.somethingbig.ai/
+- What the Water Keeps 梦境划船  ♥4262  https://what-the-water-keeps.vercel.app/
+- Tennis：让它放开做，结果是个 Pong  ♥3061  https://tennis.sixfingerpunch.com/
+- Mirror Earth 镜像地球  ♥2409  https://www.spawn.co/@mattshumer/earth?room=local
+- Small Magic 巫师沙盒  ♥2341  https://patch.gg/play/blendi/small-magic
+- Portals 无尽传送门世界  ♥1932  https://portals-endless-worlds.netlify.app/
+- Evensong 魂系 Boss 战  ♥1763  https://evensong-phi.vercel.app/
+- LANTERNFALL  ♥1420  https://loktar00.github.io/lanternfall/
+- 雾锁山门 3D 动作游戏  ♥1152  https://op7418.github.io/guizang-game-skill/
+- Rooftop Rally 天台匹克球（Unreal 5.9）  ♥1092  https://wavedash.com/games/rooftop-rally
+- Goku: Four-Star Road 悟空：四星之路  ♥890  https://app.usecrayon.ai/play/76dbd04f-0684-4486-8cc4-eae0585295e8
+- Three Games 合集页（Saltline / 钟表匠之心 / Tidewright）  ♥809  https://claude.ai/artifact/MXxb36zKgN261ckbGhmNin
+- Coloured Pencil 彩铅风游戏  ♥757  https://patch.gg/blendi/coloured-pencil
+- 体素引擎  ♥742  https://www.spawn.co/@mattshumer/voxel-engine
+- Patchwork Quilt 拼布定格风  ♥674  https://patch.gg/blendi/patchwork-quilt
+- Siege Wing 直升机攻城  ♥561  https://bannerfall.itch.io/siege-wing
+- 反向史酷比：吓跑多管闲事的孩子  ♥512  https://i-would-have-gotten-away-with-it.netlify.app/
+- Valsera 横版 RPG  ♥448  https://valsera-game.vercel.app/
+- 童年地毯赛车  ♥425  https://noclipepe.pages.dev/rug/
+- 云端特技 3D  ♥329  https://finderchangchang.github.io/cloud-stunt-3d/
+- Gilt & Gutter 1v1 第一人称射击  ♥329  https://gilt-and-gutter.vercel.app/
+- Hogwarts Royale（哈利·波特 × 堡垒之夜）  ♥312  https://www.spawn.co/@mattshumer/hogwarts-royale
+- Dread & District 奇幻运输模拟  ♥304  https://dread-and-district.netlify.app
+- Unsung Vale 开放世界 RPG  ♥303  https://unsung-vale.vercel.app/
+- Cayley 浏览器飞行模拟  ♥296  https://lauramionel.github.io/cayley-flight-simulator/
+- Worm Rider 沙虫骑士  ♥251  https://github.com/amirmushichge/worm-rider
+- MAAD MAXXING  ♥247  https://maad-maxxing.vercel.app/
+- First Crush 酿酒教学游戏  ♥229  https://frontier.every.to/experiments/first-crush
+- 星陨战纪：网页版类王者荣耀  ♥229  https://sanwan.ai/games/xingyun-moba/
+- Chrome 恐龙变兰博  ♥168  https://noclipepe.pages.dev/dino
+- Cozy Lisbon 飞越里斯本  ♥166  https://cozylisbon.vercel.app
+- Frontline 类 COD 死斗  ♥164  https://spawn.co/@robot/frontline-warfare-deathmatch
+- Fable 5.2 FPS 复现（4 个单文件演示）  ♥160  https://wquguru.github.io/fable52-fps-repro/
+- Banana Mine Rush 矿洞卡丁车  ♥154  https://remix.gg/g/banana-mine-rush
+- Turbo Tails 3D 卡丁车  ♥140  https://turbo-tails.vercel.app
+- Lumina Zombies 新地图  ♥124  https://luminazombies.com/
+- Thunder Valley 恐龙追逐  ♥98  https://loktar00.github.io/llm-test-pages/fable52-dino-chase/
+- Feed the Backrooms：你当怪物  ♥95  https://feed-backrooms.vercel.app
+- The Waking River 奇幻航行  ♥90  https://rivergame-kappa.vercel.app
+- SKYWAKE 飞行任务  ♥79  https://app.usecrayon.ai/play/992c2130-43da-416b-a577-aed9514d3057
+- KUMOKIRI 水墨武士  ♥74  https://app.usecrayon.ai/play/0cd7624e-1297-417e-a5be-b3c3036a496a
+- Pogo Riot 弹跳杆射击  ♥64  https://www.spawn.co/@abbidabbi/pogo-riot
+- Ringfall《命运》风格 FPS  ♥63  https://patch.gg/games/rehan/ringfall
+- Save the World 拯救世界  ♥63  https://save-the-world-fable.vercel.app/
+- Kestrel Head 赛车（Solstice 引擎）  ♥56  https://samg-coder.github.io/solstice-racing/
+- HITOFUDE 一筆 水墨动作游戏  ♥52  https://shubhu121.github.io/hitdude/play/
+- Chairmageddon 椅子末日  ♥48  https://fowllabs.com/fable-5-2/chairmageddon/
+- Midnight Pass 山路漂移  ♥47  https://claude.ai/artifact/UD9pGEN4QFA8F5EadRw8eL
+- VOWLORN 纯代码暗黑 RPG  ♥46  https://higgsfield.ai/@higgsfield.studio/blogs/fable-5-2-built-this-rpg-from-pure-code-here-s-every-step
+- 流浪猫游戏  ♥44  https://claude.ai/artifact/4nPXUKJjQWNsZEHVNmXXCt
+- Farewell Light  ♥44  https://sael.net/demo/farewell-light/
+- Knock It Off 猫咪推东西  ♥42  https://fowllabs.com/fable-5-2/knock-it-off/
+- Thermal 滑翔伞  ♥41  https://loktar00.github.io/llm-test-pages/fable52-hang-glider/
+- Survivors 吸血鬼幸存者 + 魔兽式装备  ♥40  https://remix.gg/g/survivors
+- Thimble Knights 动物卡牌对战  ♥35  https://www.aigameshare.com/games/animal-card-battle-game?play=1&mode=fullscreen
+- Harbor Lights Grand Prix 港口大奖赛  ♥33  https://tetriss22.github.io/harbor-gp/
+- 木头滚珠迷宫  ♥32  https://blog.silencestar.com/posts/tilt-labyrinth/play/
+- 格斗游戏（手机浏览器可玩）  ♥32  https://claude.ai/artifact/QvSjL7Hexf3nKdUP9Zerr7
+- Aussie Outback 4x4 澳洲越野  ♥30  https://rust4x4.com/
+- Hoppy Meadow 跳跳草地  ♥26  https://remix.gg/g/hoppy-meadow
+- The Vast Horizon 文字冲浪  ♥26  https://the-vast-horizon.vercel.app
+- BRIX '84 打砖块  ♥25  https://remix.gg/g/brix-84
+- 开放世界冒险卡丁车  ♥24  https://claude.ai/artifact/FpdQ81sJs1KiV1a6JCY4jj
+- Giant Leap 从月球跳回地球  ♥23  https://giant-leap.vercel.app
+- Midnight Grid 午夜城市飙车  ♥22  https://mikenevermiss.github.io/midnight-grid/
+- IRONDUSK — Yard 7 射击关卡  ♥20  https://qiaomu.t5t6.com/irondusk-yard-7/
+- Cozy Bakery 葡萄牙合作厨房  ♥18  https://cozybakery.vercel.app
+- NightClub: Drift & Speed 夜店漂移  ♥17  https://www.nightclub-driftspeed.xyz/
+- Silicon Seduction  ♥13  https://silicon-seduction.vercel.app/
+- IGNITION 零界 格斗游戏  ♥13  https://fighting-game-ignition.saito-931.workers.dev
+- Handful 岛屿之神  ♥11  https://www.aigameshare.com/games/island-god-game?play=1&mode=fullscreen
+- Reef Dive 珊瑚潜水  ♥11  https://wavedash.com/games/reef-dive
+- Poke Dodge 宝可梦躲避球  ♥9  http://poke-jam.vercel.app
+- PaletteRider 骑车进名画  ♥9  https://aashishgtbit.github.io/PaletteRider/
+- Great Wave 神奈川冲浪  ♥7  https://www.aigameshare.com/games/great-wave-off-kanagawa?play=1&mode=fullscreen
+- Roost 3D 越野摩托  ♥6  https://claude.ai/artifact/DLnFodkTwvawCNwurDmSZK?sk=5N6PtC07f1niB7h3I6clZQ
+- Go for Launch 从地球到月球驾驶舱  ♥5  https://clockendbader.github.io/fable-builds/go-for-launch/
+- INFALL 你就是黑洞  ♥5  https://infall-game.vercel.app
+- 格斗游戏（ElevenLabs 配音）  ♥4  https://claude.ai/artifact/1QGGhB68jMCjjjeeKtKNUo
+- Vippi 类 COD 射击  ♥1  https://vippi.vercel.app/
+
+【3D 场景】
+- Blender 房间里的「Claude App」网页  ♥7053  https://claude.ai/artifact/QGWUAjRrzRzZWGcQzSMLfa
+- Painted Valley 吉卜力风山谷  ♥1810  https://patch.gg/blendi/painted-valley
+- Ancient Babylon 古巴比伦城  ♥1185  https://claude.ai/artifact/CTjrZXVdUgKJ6qJXrvvr28
+- 印度班加罗尔 Indiranagar 1 平方公里  ♥1161  https://indiranagar-live.vercel.app
+- Rome, AD 320 古罗马  ♥967  https://fable-rome.surge.sh/
+- Room at Dawn 黎明的卧室  ♥855  https://github.com/Leonxlnx/room-at-dawn
+- ER-6 火星车地形探索  ♥783  https://fable-rover.vercel.app
+- Fire in Ice 冰中之火  ♥550  https://supernatural-ft.vercel.app/fire-in-ice
+- 湾区 250 年  ♥385  https://bay.theojaffee.net
+- 程序化手臂绑定  ♥326  http://procedural-arm-rig.vercel.app
+- The Garden 夏至花园  ♥297  https://samg-coder.github.io/solstice-garden/
+- 能走进去的 Claude 演示间  ♥213  https://claude.ai/artifact/R6YBDkAm2GjAC5A65D9djx
+- 果冻虎鲸材质研究  ♥202  https://claude.ai/artifact/2PBXuQAnWDS2NpiPXHNLfL
+- Code Planet 代码星球  ♥194  https://planet.tokyoaivisuals.club/
+- 瓶中体素世界  ♥162  https://claude.ai/artifact/9EgZpErM17kH2a9Q3WXW6f
+- Impossible Spaces 不可能空间  ♥137  https://patch.gg/blendi/impossible-spaces
+- 3D 帆船  ♥112  https://claude.ai/artifact/7ge282etTXSS4edGFTFa85
+- 海盗船航行  ♥110  https://tests.jazii.dev/
+- SR-71 发动机拆解  ♥76  https://airsup.ai/lab/sr-71?mach=3.2
+- 温哥华鸟瞰  ♥72  https://vancouver.webly.site
+- 逾越节的耶路撒冷  ♥43  https://fable-jerusalem.vercel.app/
+- Matrix Vibe 黑客帝国之城  ♥30  https://feelthematrix.com
+- Pine Hollow 会动的滑雪场  ♥30  https://loktar00.github.io/pine-hollow/
+- 像素画变 3D 世界  ♥29  https://claude.ai/artifact/HGk1WNqTgrGEE8ndBkEipB
+- 温哥华英吉利湾黄金时刻  ♥29  https://vancouver-claude.webly.site
+- Galaxy Dive 飞进星系  ♥24  https://galaxy-dive.vercel.app
+- Calibre 5.2 机械表  ♥22  https://calibre-watch-snowy.vercel.app/
+- 旧金山黄金时刻  ♥22  https://sf-js.webly.site
+- 体素罗马斗兽场  ♥20  https://claude.ai/artifact/7nmzhxeamcunJbKVK32ptz
+- HX-6 六足机器人登陆三个星球  ♥11  https://glittery-stardust-885b97.netlify.app
+- Red Wing 私人飞机  ♥8  https://madebysourasith-sudo.github.io/red-wing-jet/
+- 单程太空旅行个人站  ♥6  https://zondark.com
+- Da Vinci's Living Codex 达·芬奇活手稿  ♥5  https://davinci-mechanics.vercel.app/
+- 小行星带压力测试  ♥4  https://claude.ai/artifact/FETrKoitcqxPQjbQvZd79C
+- 骑巨蜗牛的村庄  ♥0  https://claude.ai/artifact/BCDCNHRTq3y9W4Px3xc4DN
+- 五层木塔变身斗笠女侠  ♥0  https://claude.ai/artifact/UqU4w7jSr6pzF2McsbyQjJ
+
+【网页与工具】
+- Claudia Gallery  ♥5363  https://claudia.gallery
+- Robotics Lab 机器人开发板实验室  ♥4661  http://robotics-lab-app.vercel.app
+- House Bangers 浩室舞曲生成器  ♥3984  https://claude.ai/artifact/N6bSgS4ZH5ifFQfg8sm4dv
+- 76 个单文件 HTML 视觉作品集  ♥2624  https://miaai-lab.github.io/Claude-Fable-5.2-HTML-Files/
+- Keep 像素世界密码强度条  ♥1560  https://pixel-worlds.vercel.app/keep/
+- X-Ray Mirror X 光镜子  ♥1372  https://masterofvfx2070.github.io/xray-mirror/
+- 动物也上班 3D 电子手帐  ♥1189  https://xianxie6.github.io/animals-planner-2027/
+- Spine Menu 菜单动效  ♥1170  https://uberdesigner.ai/t/spine-menu
+- RoverKit 机器人小车教学  ♥1044  https://roverkit.vercel.app
+- PULP AI 原生音频工作站  ♥941  https://github.com/AlexAtFF/pulp-daw-public
+- Ambient Town 氛围音乐工作站  ♥892  https://frontier.every.to/experiments/ambient-town
+- 印度维生素该买哪些  ♥739  https://itspsneha.com/supplements
+- 写作史（交互片）  ♥667  https://v2.video/riley/the-history-of-writing/v1
+- Auden 1941 年失传诗歌课复原  ♥540  https://auden-english-135.netlify.app/
+- Where is everybody? 费米悖论调查  ♥456  https://where-is-everybody-fermi.netlify.app/
+- 加拉塔萨雷球场座位视角  ♥430  https://gsplan.org
+- Origami Helper 3D 折纸教程  ♥217  https://origamihelper.com
+- Typed 打字机  ♥205  https://typed.page/
+- One Heartbeat 跳动的 3D 心脏  ♥152  https://clockendbader.github.io/fable-builds/heartbeat/
+- anymove 视频转动作  ♥141  https://patch.gg/patch/anymove
+- Ribbon Hero 首屏  ♥138  https://motionsites.ai/?prompt=vante-ribbon-hero
+- nikechan 个人站改版  ♥130  https://nikechan.com/
+- Harappa 原野生成 Blender 插件  ♥79  https://github.com/kanaworksai-hue/harappa
+- PC Build Lab 装机实验室  ♥51  https://tetriss22.github.io/pc-build-lab/
+- Best Seat in the House 演唱会座位视角  ♥39  https://sael.net/seat-arena
+- 一枚：一页能做到什么程度  ♥11  https://ai.itokoba.com/ichimai/
+- JWT 落地页 20 种改版  ♥9  https://jwt-designs-preview.noone-697.workers.dev/
+- Driftwood 落地页（Fable 对 Opus）  ♥9  https://www.asumacodes.xyz/arena/driftwood
+- 独栋住宅设计提案书  ♥7  https://claude.ai/artifact/TiymxxFXzMo7xhWUaecbzk
+- 鼓组网站  ♥5  https://claude.ai/artifact/9yQkezie4jY3oz2YDLFDiq
+- araneae 蜘蛛长文  ♥5  https://uberdesigner.ai/t/araneae
+- Dub Techno 曲子 + 可视化  ♥4  https://claude.ai/artifact/Pk6rHPyRwfShT37kiU1sT6
+- 《罗摩衍那》男主的宝莱坞家谱  ♥2  https://claude.ai/artifact/5ufHvxgvXTf5YgQeTR8TbG
+- Demoscene 浏览器演示  ♥1  https://claude.ai/artifact/4aEy6FtUi7jrm9U7uYgp8K
+- 112 种冥想图解  ♥1  https://claude.ai/artifact/H8E7AonW2KFrzdRimaLeXb
+
+【动画】
+- Crimson Loong 赤龙：90 秒巨龙短片  ♥3676  https://github.com/ChetasLua/crimson-loong
+- Shred Kit 碎纸动画模板  ♥413  https://github.com/amirmushichge/shred-kit
+- 骑车的鹈鹕：60 秒手绘风短片  ♥356  https://github.com/ChetasLua/pelican-riding-a-bicycle
+- One Sweep 78 秒动漫打斗  ♥251  https://github.com/anstapnever/one-sweep
+- 圆珠笔微距 ASMR  ♥241  https://github.com/crossps/ballpoint
+- 哥斯拉之夜  ♥229  https://github.com/ChetasLua/godzilla-nights
+- Blackout 79 秒动漫  ♥118  https://github.com/anstapnever/blackout
+- Dragon of a Thousand Peaks 千峰之龙  ♥105  https://github.com/0xCodez/thousand-peaks
+- 机器手指走螺旋楼梯  ♥61  https://github.com/skild-ai/steel-webgpu/pull/7
+- Ryu 山化龙  ♥38  https://github.com/seeconever/ryu
+- Kagami 84 秒动漫  ♥36  https://github.com/Florencvv/kagami
+- Kumiko 宣传片  ♥18  https://usekumiko.app/

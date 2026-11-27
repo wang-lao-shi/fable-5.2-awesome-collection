@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<!--
+  Cloud Stunt 3D
+  Original: https://finderchangchang.github.io/cloud-stunt-3d/
+  Author: jev_chat (GitHub: finderchangchang) — https://x.com/jev_chat
+  License: no license file found
+  Packaged as a self-contained offline single HTML file (all scripts/assets inlined).
+  Notes: umami analytics script removed
+-->
+
+<html lang="zh-CN">
+<head><script>window.__I18N={"dict": {"Space": "空格"}, "re": []};</script><script>/* Hark 中文化层：不改原代码，运行时把英文界面替换成中文。依赖 window.__I18N = {dict:{英文:中文}, re:[[正则源, flags, 替换]]} */
+(function(){
+  var C = window.__I18N || {dict:{}, re:[]};
+  var KEY = 'hark_i18n_off';
+  var off = false; try { off = localStorage.getItem(KEY) === '1'; } catch(e) {}
+  var dict = C.dict || {}, lower = {};
+  for (var k in dict) lower[k.trim().toLowerCase()] = dict[k];
+  var res = (C.re || []).map(function(r){ return [new RegExp(r[0], r[1] || ''), r[2]]; });
+  function tr(s){
+    if (off || typeof s !== 'string' || !s) return s;
+    var t = s.trim(); if (!t || !/[A-Za-z]/.test(t)) return s;
+    var hit = dict[t]; if (hit === undefined) hit = lower[t.toLowerCase()];
+    if (hit !== undefined) return s.replace(t, hit);
+    var out = s;
+    for (var i = 0; i < res.length; i++) out = out.replace(res[i][0], res[i][1]);
+    return out;
+  }
+  window.__harkTr = tr;
+  // 画布文字
+  var P = window.CanvasRenderingContext2D && CanvasRenderingContext2D.prototype;
+  if (P) ['fillText','strokeText','measureText'].forEach(function(m){
+    var o = P[m]; if (!o) return;
+    P[m] = function(t){ var a = Array.prototype.slice.call(arguments); a[0] = tr(String(t)); return o.apply(this, a); };
+  });
+  var O = window.OffscreenCanvasRenderingContext2D && OffscreenCanvasRenderingContext2D.prototype;
+  if (O) ['fillText','strokeText','measureText'].forEach(function(m){
+    var o = O[m]; if (!o) return;
+    O[m] = function(t){ var a = Array.prototype.slice.call(arguments); a[0] = tr(String(t)); return o.apply(this, a); };
+  });
+  // DOM 文字
+  var SKIP = {SCRIPT:1, STYLE:1, TEXTAREA:1, CODE:1, PRE:1, NOSCRIPT:1};
+  var ATTR = ['placeholder','title','aria-label','alt'];
+  var busy = false;
+  function fixText(n){ var v = n.nodeValue, w = tr(v); if (w !== v) { n.__harkOrig = v; n.nodeValue = w; } }
+  function fixEl(el){
+    if (!el || el.nodeType !== 1 || SKIP[el.tagName]) return;
+    for (var i = 0; i < ATTR.length; i++) { var a = el.getAttribute(ATTR[i]); if (a) { var b = tr(a); if (b !== a) el.setAttribute(ATTR[i], b); } }
+    if (el.tagName === 'INPUT' && /^(button|submit|reset)$/i.test(el.type) && el.value) { var v = tr(el.value); if (v !== el.value) el.value = v; }
+  }
+  function walk(root){
+    if (!root) return;
+    if (root.nodeType === 3) { if (!(root.parentNode && SKIP[root.parentNode.tagName])) fixText(root); return; }
+    if (root.nodeType !== 1 && root.nodeType !== 9 && root.nodeType !== 11) return;
+    if (root.nodeType === 1) { if (SKIP[root.tagName]) return; fixEl(root); }
+    var tw = document.createTreeWalker(root, 5, null), n;
+    while ((n = tw.nextNode())) {
+      if (n.nodeType === 3) { if (!(n.parentNode && SKIP[n.parentNode.tagName])) fixText(n); }
+      else fixEl(n);
+    }
+    if (root.shadowRoot) walk(root.shadowRoot);
+  }
+  function run(){
+    if (off) return;
+    busy = true; try { walk(document.body || document.documentElement); if (document.title) document.title = tr(document.title); } finally { busy = false; }
+    new MutationObserver(function(ms){
+      if (busy || off) return; busy = true;
+      try { ms.forEach(function(m){
+        if (m.type === 'characterData') fixText(m.target);
+        else if (m.type === 'attributes') fixEl(m.target);
+        else m.addedNodes.forEach(walk);
+      }); } finally { busy = false; }
+    }).observe(document.documentElement, {subtree:true, childList:true, characterData:true, attributes:true, attributeFilter:ATTR.concat(['value'])});
+    // 切换按钮
+    var b = document.createElement('div');
+    b.textContent = off ? 'EN → 中' : '中 → EN';
+    b.title = '切换中文 / English（刷新生效）';
+    b.style.cssText = 'position:fixed;right:10px;bottom:10px;z-index:2147483647;padding:4px 9px;font:12px/1.4 system-ui,sans-serif;color:#fff;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.3);border-radius:12px;cursor:pointer;user-select:none;opacity:.6';
+    b.onmouseenter = function(){ b.style.opacity = 1; }; b.onmouseleave = function(){ b.style.opacity = .6; };
+    b.onclick = function(e){ e.stopPropagation(); try { localStorage.setItem(KEY, off ? '0' : '1'); } catch(_) {} location.reload(); };
+    (document.body || document.documentElement).appendChild(b);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run); else run();
+  // 切换按钮不受翻译影响
+  if (off) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run2); else run2(); }
+  function run2(){
+    var b = document.createElement('div'); b.textContent = 'EN → 中'; b.title = '切换中文（刷新生效）';
+    b.style.cssText = 'position:fixed;right:10px;bottom:10px;z-index:2147483647;padding:4px 9px;font:12px/1.4 system-ui,sans-serif;color:#fff;background:rgba(0,0,0,.55);border-radius:12px;cursor:pointer;opacity:.6';
+    b.onclick = function(){ try { localStorage.setItem(KEY, '0'); } catch(_) {} location.reload(); };
+    (document.body || document.documentElement).appendChild(b);
+  }
+})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>云上叠罗汉 · 3D</title>
+<style>
+  :root{--bar:9vh}
+  @media (min-aspect-ratio:21/10){:root{--bar:0px}}
+  body.free{--bar:0px}
+  html,body{margin:0;height:100%;overflow:hidden;background:#0b1020;color:#fff;user-select:none;-webkit-user-select:none;
+    font-family:"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+  #gl{position:fixed;inset:0;width:100vw;height:100vh;display:block;cursor:grab;touch-action:none}
+  #gl:active{cursor:grabbing}
+  #vig{position:fixed;inset:0;pointer-events:none;
+    background:radial-gradient(ellipse at 50% 46%,rgba(0,0,0,0) 52%,rgba(8,10,30,.42) 100%)}
+  .bar{position:fixed;left:0;right:0;height:var(--bar);background:#05060c;pointer-events:none;transition:height .6s ease}
+  .bar.top{top:0}.bar.bot{bottom:0}
+  #rec{position:fixed;left:18px;top:calc(var(--bar) + 12px);font:600 12px/1.4 ui-monospace,Consolas,monospace;
+    letter-spacing:.06em;text-shadow:0 1px 3px rgba(0,0,0,.6);pointer-events:none;transition:top .6s ease}
+  #rec i{display:inline-block;width:9px;height:9px;border-radius:50%;background:#ff3b3b;margin-right:7px;
+    animation:blink 1.2s steps(2) infinite}
+  @keyframes blink{50%{opacity:.15}}
+  #rec b{display:block;margin-top:3px;font:600 13px/1.4 "Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;letter-spacing:.02em}
+  #sub{position:fixed;left:50%;bottom:calc(var(--bar) + 14px);transform:translateX(-50%);width:max-content;max-width:min(88vw,900px);
+    text-align:center;font-size:clamp(14px,2.1vw,22px);font-weight:600;line-height:1.5;pointer-events:none;
+    text-shadow:0 2px 6px rgba(0,0,0,.75),0 0 2px rgba(0,0,0,.9);transition:bottom .6s ease}
+  #bubble{position:fixed;left:0;top:0;transform-origin:0 50%;pointer-events:none;opacity:0;
+    background:#fff;color:#1b2233;border:3px solid #1b2233;border-radius:.7em;
+    padding:.25em .7em;font-weight:900;white-space:nowrap;box-shadow:0 5px 0 rgba(27,34,51,.25);
+    font-family:"Microsoft YaHei","PingFang SC",sans-serif;will-change:transform}
+  #bubble::before,#bubble::after{content:"";position:absolute;top:50%;border-style:solid;border-color:transparent}
+  #bubble::before{left:-15px;margin-top:-10px;border-width:10px 15px 10px 0;border-right-color:#1b2233}
+  #bubble::after{left:-9px;margin-top:-7px;border-width:7px 11px 7px 0;border-right-color:#fff}
+  #bubble small{display:block;font-size:.42em;font-weight:700;opacity:.7;margin-bottom:-.2em}
+  #ui{position:fixed;right:14px;top:calc(var(--bar) + 10px);display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;
+    max-width:70vw;transition:top .6s ease;opacity:.8}
+  #ui:hover{opacity:1}
+  #ui button{font:inherit;font-size:12.5px;color:#fff;background:rgba(15,20,40,.5);border:1px solid rgba(255,255,255,.22);
+    padding:5px 11px;border-radius:999px;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+  #ui button:hover{background:rgba(255,255,255,.22)}
+  #ui button.on{background:#ffd35c;color:#1b2233;border-color:#ffd35c;font-weight:700}
+  #shots{position:fixed;right:14px;top:calc(var(--bar) + 50px);width:min(360px,84vw);background:rgba(10,14,30,.72);
+    border:1px solid rgba(255,255,255,.16);border-radius:14px;padding:10px 12px;font-size:12.5px;line-height:1.55;
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:none}
+  #shots.open{display:block}
+  #shots h3{margin:0 0 6px;font-size:13px;letter-spacing:.08em;opacity:.75}
+  #shots div{padding:3px 6px;border-radius:7px;cursor:pointer;opacity:.72}
+  #shots div:hover{background:rgba(255,255,255,.1)}
+  #shots div.cur{background:rgba(255,211,92,.2);opacity:1}
+  #shots em{font-style:normal;opacity:.6;margin-right:6px;font-family:ui-monospace,Consolas,monospace}
+  #quiz{order:99;margin:8px 0 0;padding-top:8px;border-top:1px solid rgba(255,255,255,.16);opacity:.86}
+  #quiz span{opacity:.6}
+  #shots.open{display:flex;flex-direction:column}
+  @media (max-width:640px){#ui{top:calc(var(--bar) + 52px)} #shots{top:calc(var(--bar) + 92px)}}
+  #slate{position:fixed;inset:0;background:#05060c;display:flex;align-items:center;justify-content:center;
+    flex-direction:column;gap:14px;transition:opacity .5s;z-index:5;text-align:center;pointer-events:none}
+  #slate.off{opacity:0;pointer-events:none}
+  #slate h1{margin:0;font:700 clamp(34px,7vw,76px)/1.1 "STKaiti","KaiTi","楷体","Songti SC",serif;letter-spacing:.14em}
+  #slate p{margin:0;opacity:.7;font-size:clamp(12px,1.6vw,16px);letter-spacing:.2em}
+  #slate .clap{display:flex;gap:0;border:2px solid #fff;border-radius:6px;overflow:hidden;font:600 13px/1 ui-monospace,Consolas,monospace}
+  #slate .clap span{padding:8px 14px;border-right:1px solid rgba(255,255,255,.5)}
+  #slate .clap span:last-child{border-right:0}
+  #err{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:24px;text-align:center;background:#0b1020}
+</style>
+</head>
+<body>
+<canvas id="gl"></canvas>
+<div id="vig"></div>
+<div class="bar top"></div><div class="bar bot"></div>
+<div id="rec"><i></i><span id="tc">00:00:00:00</span><b id="shotName"></b></div>
+<div id="sub"></div>
+<div id="bubble"><small>答案是</small><span id="bubbleTxt">21！</span></div>
+<div id="ui">
+  <button id="bCam" title="拖动画面也会切到自由视角">自由视角</button>
+  <button id="bShots">分镜表</button>
+  <button id="bSnd">声音</button>
+  <button id="bPause">暂停</button>
+</div>
+<div id="shots"><h3>分 镜 表</h3>
+  <p id="quiz"><b>糖果题</b>：黑袋里有苹果、桃子、西瓜三种口味的糖，每种都有圆形和五角星两种形状，形状靠手感摸得出来。圆形各有 7、9、8 颗，五角星各有 7、6、4 颗。最少摸出几颗，才能保证手里有一颗苹果味和一颗桃子味、且两颗形状不同？<br><b>答案 21</b>：12 颗五角星 + 9 颗圆形。<br><span>空格 暂停　F 切换视角　1–7 跳到对应镜头</span></p>
+</div>
+<div id="slate">
+  <p>CLAUDE 导演作品</p>
+  <h1>云上叠罗汉</h1>
+  <div class="clap"><span>场 1</span><span>镜 1</span><span id="take">第 1 条</span></div>
+</div>
+<div id="err">这个页面需要 WebGL2。请换用新版 Chrome、Edge、Firefox 或 Safari 打开。</div>
+
+<script>
+(() => {
+'use strict';
+/* =====================================================================
+   一、渲染引擎（WebGL2，无外部依赖）：矩阵、着色器、阴影贴图、描边
+   ===================================================================== */
+const $ = id => document.getElementById(id);
+const canvas = $('gl');
+const gl = canvas.getContext('webgl2', { antialias: true, alpha: false, powerPreference: 'high-performance' });
+if (!gl) { $('err').style.display = 'flex'; return; }
+const { sin, cos, tan, PI, min, max, abs, sqrt, hypot, atan2, exp, random, floor, pow } = Math;
+const RAD = PI / 180, TAU = PI * 2;
+const clamp = (x, a, b) => min(b, max(a, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const ss = (a, b, x) => { const u = clamp((x - a) / (b - a), 0, 1); return u * u * (3 - 2 * u); };
+
+const V = {
+  add: (a, b) => [a[0] + b[0], a[1] + b[1], a[2] + b[2]],
+  sub: (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]],
+  mul: (a, s) => [a[0] * s, a[1] * s, a[2] * s],
+  dot: (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2],
+  cross: (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]],
+  len: a => hypot(a[0], a[1], a[2]),
+  norm: a => { const l = hypot(a[0], a[1], a[2]) || 1; return [a[0] / l, a[1] / l, a[2] / l]; },
+  lerp: (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t]
+};
+const M4 = {                                           // 列主序 4x4
+  id: () => [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1],
+  mul(a, b) {
+    const o = new Array(16);
+    for (let c = 0; c < 4; c++) for (let r = 0; r < 4; r++)
+      o[c*4 + r] = a[r] * b[c*4] + a[4 + r] * b[c*4 + 1] + a[8 + r] * b[c*4 + 2] + a[12 + r] * b[c*4 + 3];
+    return o;
+  },
+  chain: (...ms) => ms.reduce((a, b) => M4.mul(a, b)),
+  tr: (x, y, z) => [1,0,0,0, 0,1,0,0, 0,0,1,0, x,y,z,1],
+  sc: (x, y = x, z = x) => [x,0,0,0, 0,y,0,0, 0,0,z,0, 0,0,0,1],
+  rx: a => { const c = cos(a), s = sin(a); return [1,0,0,0, 0,c,s,0, 0,-s,c,0, 0,0,0,1]; },
+  ry: a => { const c = cos(a), s = sin(a); return [c,0,-s,0, 0,1,0,0, s,0,c,0, 0,0,0,1]; },
+  rz: a => { const c = cos(a), s = sin(a); return [c,s,0,0, -s,c,0,0, 0,0,1,0, 0,0,0,1]; },
+  pt: (m, p) => [m[0]*p[0] + m[4]*p[1] + m[8]*p[2] + m[12], m[1]*p[0] + m[5]*p[1] + m[9]*p[2] + m[13], m[2]*p[0] + m[6]*p[1] + m[10]*p[2] + m[14]],
+  dir: (m, p) => [m[0]*p[0] + m[4]*p[1] + m[8]*p[2], m[1]*p[0] + m[5]*p[1] + m[9]*p[2], m[2]*p[0] + m[6]*p[1] + m[10]*p[2]],
+  persp(fovy, asp, n, f) { const t = 1 / tan(fovy / 2); return [t/asp,0,0,0, 0,t,0,0, 0,0,(f+n)/(n-f),-1, 0,0,2*f*n/(n-f),0]; },
+  ortho(l, r, b, t, n, f) { return [2/(r-l),0,0,0, 0,2/(t-b),0,0, 0,0,-2/(f-n),0, -(r+l)/(r-l),-(t+b)/(t-b),-(f+n)/(f-n),1]; },
+  look(eye, at, up) {
+    const z = V.norm(V.sub(eye, at)), x = V.norm(V.cross(up, z)), y = V.cross(z, x);
+    return [x[0],y[0],z[0],0, x[1],y[1],z[1],0, x[2],y[2],z[2],0, -V.dot(x, eye),-V.dot(y, eye),-V.dot(z, eye),1];
+  },
+  inv(a) {
+    const a00=a[0],a01=a[1],a02=a[2],a03=a[3],a10=a[4],a11=a[5],a12=a[6],a13=a[7],a20=a[8],a21=a[9],a22=a[10],a23=a[11],a30=a[12],a31=a[13],a32=a[14],a33=a[15];
+    const b00=a00*a11-a01*a10,b01=a00*a12-a02*a10,b02=a00*a13-a03*a10,b03=a01*a12-a02*a11,b04=a01*a13-a03*a11,b05=a02*a13-a03*a12,
+      b06=a20*a31-a21*a30,b07=a20*a32-a22*a30,b08=a20*a33-a23*a30,b09=a21*a32-a22*a31,b10=a21*a33-a23*a31,b11=a22*a33-a23*a32;
+    const d = 1 / (b00*b11 - b01*b10 + b02*b09 + b03*b08 - b04*b07 + b05*b06);
+    return [(a11*b11-a12*b10+a13*b09)*d,(a02*b10-a01*b11-a03*b09)*d,(a31*b05-a32*b04+a33*b03)*d,(a22*b04-a21*b05-a23*b03)*d,
+      (a12*b08-a10*b11-a13*b07)*d,(a00*b11-a02*b08+a03*b07)*d,(a32*b02-a30*b05-a33*b01)*d,(a20*b05-a22*b02+a23*b01)*d,
+      (a10*b10-a11*b08+a13*b06)*d,(a01*b08-a00*b10-a03*b06)*d,(a30*b04-a31*b02+a33*b00)*d,(a21*b02-a20*b04-a23*b00)*d,
+      (a11*b07-a10*b09-a12*b06)*d,(a00*b09-a01*b07+a02*b06)*d,(a31*b01-a30*b03-a32*b00)*d,(a20*b03-a21*b01+a22*b00)*d];
+  },
+  nm(m) {                                              // 法线矩阵（上 3x3 的余子式矩阵）
+    const a=m[0],b=m[1],c=m[2],d=m[4],e=m[5],f=m[6],g=m[8],h=m[9],i=m[10];
+    return [e*i-f*h, f*g-d*i, d*h-e*g, c*h-b*i, a*i-c*g, b*g-a*h, b*f-c*e, c*d-a*f, a*e-b*d];
+  },
+  between(a, b, r = 1, r2 = r) {                       // 把 y∈[0,1] 的单位柱体摆到 a→b
+    const d = V.sub(b, a), l = V.len(d) || 1e-6, y = V.mul(d, 1 / l);
+    const x = V.norm(V.cross(abs(y[1]) > .98 ? [1, 0, 0] : [0, 1, 0], y)), z = V.cross(x, y);
+    return [x[0]*r,x[1]*r,x[2]*r,0, d[0],d[1],d[2],0, z[0]*r2,z[1]*r2,z[2]*r2,0, a[0],a[1],a[2],1];
+  }
+};
+
+/* ---------- 着色器 ---------- */
+const VS = `#version 300 es
+layout(location=0) in vec3 aPos; layout(location=1) in vec3 aNor; layout(location=2) in vec4 aCol;
+uniform mat4 uModel, uVP, uLightVP; uniform mat3 uNM; uniform float uOutline; uniform vec2 uRes;
+out vec3 vN, vW; out vec4 vCol, vL;
+void main(){
+  vec4 w = uModel * vec4(aPos, 1.); vW = w.xyz; vN = normalize(uNM * aNor); vCol = aCol; vL = uLightVP * w;
+  vec4 p = uVP * w;
+  if (uOutline > 0.) {
+    vec4 q = uVP * vec4(w.xyz + vN * .05, 1.);
+    vec2 d = (q.xy / q.w - p.xy / p.w) * uRes; float l = length(d);
+    if (l > 1e-5) p.xy += d / l / uRes * uOutline * 2. * p.w;
+  }
+  gl_Position = p;
+}`;
+const TONE = `vec3 tone(vec3 c){
+  c = pow(clamp((c*(2.51*c+.03))/(c*(2.43*c+.59)+.14), 0., 1.), vec3(1./2.2));
+  c = mix(vec3(dot(c, vec3(.299, .587, .114))), c, 1.16);              // 调色：略加饱和与反差
+  return clamp((c - .5) * 1.06 + .5, 0., 1.);
+}`;
+const FS = `#version 300 es
+precision highp float; precision highp sampler2DShadow;
+in vec3 vN, vW; in vec4 vCol, vL;
+uniform vec3 uSun, uSunCol, uSkyCol, uGndCol, uCam, uFogCol, uOutCol;
+uniform float uFog, uOutline, uSoft, uAlpha, uRecv, uGlow;
+uniform sampler2DShadow uShadow;
+out vec4 o;
+${TONE}
+void main(){
+  vec3 N = normalize(vN); if (!gl_FrontFacing && uOutline == 0.) N = -N;
+  vec3 Vd = normalize(uCam - vW);
+  float fog = 1. - exp(-length(uCam - vW) * uFog);
+  vec3 fogC = mix(uFogCol, vec3(1., .84, .62), pow(max(dot(-Vd, uSun), 0.), 5.) * .75);   // 朝太阳的方向雾气偏暖
+  if (uOutline > 0.) { o = vec4(tone(mix(uOutCol, fogC, fog)), 1.); return; }
+  float nl = dot(N, uSun), sh = 1.;
+  if (uRecv > .5) {
+    vec3 lp = vL.xyz / vL.w * .5 + .5;
+    if (lp.x > 0. && lp.x < 1. && lp.y > 0. && lp.y < 1. && lp.z < 1.) {
+      vec3 q = vec3(lp.xy, lp.z - (.0016 + .0045 * (1. - max(nl, 0.)))); float e = 1.4 / 2048.;
+      sh = (texture(uShadow, q) + texture(uShadow, q + vec3(e, e, 0.)) + texture(uShadow, q + vec3(-e, e, 0.))
+        + texture(uShadow, q + vec3(e, -e, 0.)) + texture(uShadow, q + vec3(-e, -e, 0.))) / 5.;
+    }
+  }
+  float band = smoothstep(-.05, .2, nl) * .55 + smoothstep(.4, .72, nl) * .45;
+  float diff = mix(max(nl, 0.), band, .6) * sh;
+  vec3 amb = mix(uGndCol, uSkyCol, N.y * .5 + .5);
+  float rim = pow(1. - max(dot(N, Vd), 0.), 3.);
+  vec3 c;
+  if (uSoft > .5) {                                   // 云：环绕光，背光面偏蓝
+    float w = smoothstep(-.4, 1., nl);
+    c = vCol.rgb * (amb * 1.25 + uSunCol * w * w * .36) + rim * uSunCol * .06;
+  } else {
+    c = vCol.rgb * (amb + uSunCol * diff) + rim * uSkyCol * .55 * (.35 + .65 * vCol.rgb);
+    c += uSunCol * pow(max(dot(N, normalize(uSun + Vd)), 0.), mix(18., 140., vCol.a)) * vCol.a * sh * .9;
+  }
+  c += vCol.rgb * uGlow;
+  o = vec4(tone(mix(c, fogC, fog)), uAlpha);
+}`;
+const VS_SH = `#version 300 es
+layout(location=0) in vec3 aPos; uniform mat4 uModel, uLightVP;
+void main(){ gl_Position = uLightVP * uModel * vec4(aPos, 1.); }`;
+const FS_SH = `#version 300 es
+precision highp float; void main(){}`;
+const VS_SKY = `#version 300 es
+out vec2 vP; void main(){ vec2 p = vec2(float((gl_VertexID << 1) & 2), float(gl_VertexID & 2)) * 2. - 1.; vP = p; gl_Position = vec4(p, 1., 1.); }`;
+const FS_SKY = `#version 300 es
+precision highp float; in vec2 vP; uniform mat4 uInvVP; uniform vec3 uCam, uSun, uSunCol, uZen, uHor, uLow; out vec4 o;
+${TONE}
+void main(){
+  vec4 w = uInvVP * vec4(vP, 1., 1.); vec3 d = normalize(w.xyz / w.w - uCam);
+  vec3 c = d.y > 0. ? mix(uHor, uZen, pow(d.y, .5)) : mix(uHor, uLow, pow(min(-d.y * 2.5, 1.), .6));
+  float sd = max(dot(d, uSun), 0.);
+  c = mix(c, vec3(1., .8, .56), pow(sd, 5.) * .55 * (1. - clamp(d.y * 2.2, 0., 1.)));        // 太阳一侧地平线的暖色
+  c += uSunCol * (smoothstep(.9993, .9996, sd) * 9. + pow(sd, 420.) * 1.3 + pow(sd, 40.) * .2 + pow(sd, 7.) * .05);
+  o = vec4(tone(c), 1.);
+}`;
+function program(vs, fs) {
+  const p = gl.createProgram();
+  for (const [type, src] of [[gl.VERTEX_SHADER, vs], [gl.FRAGMENT_SHADER, fs]]) {
+    const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+    gl.attachShader(p, s);
+  }
+  gl.linkProgram(p);
+  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+  const u = {}, n = gl.getProgramParameter(p, gl.ACTIVE_UNIFORMS);
+  for (let i = 0; i < n; i++) { const nm = gl.getActiveUniform(p, i).name; u[nm] = gl.getUniformLocation(p, nm); }
+  return { p, u };
+}
+const P_MAIN = program(VS, FS), P_SH = program(VS_SH, FS_SH), P_SKY = program(VS_SKY, FS_SKY);
+
+/* ---------- 阴影贴图 ---------- */
+const SHN = 2048, shTex = gl.createTexture(), shFB = gl.createFramebuffer();
+gl.bindTexture(gl.TEXTURE_2D, shTex);
+gl.texImage2D(gl.TEXTURE_2D, 0, gl.DEPTH_COMPONENT24, SHN, SHN, 0, gl.DEPTH_COMPONENT, gl.UNSIGNED_INT, null);
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_COMPARE_MODE, gl.COMPARE_REF_TO_TEXTURE);
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_COMPARE_FUNC, gl.LEQUAL);
+gl.bindFramebuffer(gl.FRAMEBUFFER, shFB);
+gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, shTex, 0);
+gl.drawBuffers([gl.NONE]); gl.readBuffer(gl.NONE);
+gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+/* ---------- 场景节点 ---------- */
+const DRAW = [];
+class Node {
+  constructor(parent, mesh, opt) {
+    this.p = [0, 0, 0]; this.r = [0, 0, 0]; this.s = [1, 1, 1]; this.local = null; this.kids = [];
+    this.world = M4.id(); this.vis = true; this.wvis = true;
+    this.mesh = mesh || null; this.outline = 0; this.shadow = true; this.recv = true; this.soft = 0; this.alpha = 1; this.glow = 0;
+    if (opt) Object.assign(this, opt);
+    if (parent) parent.kids.push(this);
+    if (this.mesh) DRAW.push(this);
+  }
+  at(x, y, z) { this.p = [x, y, z]; return this; }
+  rot(x, y, z) { this.r = [x, y, z]; return this; }
+  update(pw, pvis) {
+    const l = this.local || M4.chain(M4.tr(this.p[0], this.p[1], this.p[2]), M4.ry(this.r[1]), M4.rx(this.r[0]), M4.rz(this.r[2]),
+      M4.sc(this.s[0], this.s[1], this.s[2]));
+    this.world = pw ? M4.mul(pw, l) : l;
+    this.wvis = this.vis && pvis !== false;
+    for (const k of this.kids) k.update(this.world, this.wvis);
+  }
+}
+const root = new Node(null);
+
+/* ---------- 环境与光照（颜色都在线性空间） ---------- */
+const lin = h => [1, 3, 5].map(i => pow(parseInt(h.slice(i, i + 2), 16) / 255, 2.2));
+const ENV = {
+  sun: V.norm([.858, .407, .312]), sunCol: V.mul(lin('#ffecc8'), 2.2), skyCol: V.mul(lin('#8fbcff'), .62),
+  gndCol: V.mul(lin('#c9b8e8'), .32), zen: lin('#1c5fcf'), hor: lin('#cfe6ff'), low: lin('#b7d2f2'),
+  fogCol: lin('#bcd6f4'), fog: .0029, outCol: lin('#1a2036')
+};
+
+function render(cam) {
+  const dpr = min(devicePixelRatio || 1, 2), W = max(1, canvas.clientWidth * dpr | 0), H = max(1, canvas.clientHeight * dpr | 0);
+  if (canvas.width !== W || canvas.height !== H) { canvas.width = W; canvas.height = H; }
+  const view = M4.look(cam.eye, cam.at, cam.up || [0, 1, 0]);
+  const asp = W / H, fovy = asp >= 1.3 ? cam.fov * RAD : 2 * Math.atan(tan(cam.fov * RAD / 2) * 1.3 / asp);   // 竖屏时加大视角，保住横向取景
+  const VP = M4.mul(M4.persp(min(fovy, 2.1), asp, .15, 900), view);
+  const c = cam.focus || [0, 2, 0], R = 10.5;
+  const LVP = M4.mul(M4.ortho(-R, R, -R, R, 1, 90), M4.look(V.add(c, V.mul(ENV.sun, 45)), c, [0, 1, 0]));
+  cam.VP = VP; cam.W = W; cam.H = H;
+
+  // 1) 阴影深度
+  gl.bindFramebuffer(gl.FRAMEBUFFER, shFB); gl.viewport(0, 0, SHN, SHN);
+  gl.enable(gl.DEPTH_TEST); gl.depthMask(true); gl.clear(gl.DEPTH_BUFFER_BIT); gl.disable(gl.CULL_FACE); gl.disable(gl.BLEND);
+  gl.useProgram(P_SH.p); gl.uniformMatrix4fv(P_SH.u.uLightVP, false, LVP);
+  gl.enable(gl.POLYGON_OFFSET_FILL); gl.polygonOffset(1.5, 3);
+  for (const n of DRAW) if (n.wvis && n.shadow && n.alpha === 1) {
+    gl.uniformMatrix4fv(P_SH.u.uModel, false, n.world); gl.bindVertexArray(n.mesh.vao);
+    gl.drawElements(gl.TRIANGLES, n.mesh.count, n.mesh.type, 0);
+  }
+  gl.disable(gl.POLYGON_OFFSET_FILL);
+
+  // 2) 天空
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.viewport(0, 0, W, H); gl.clear(gl.DEPTH_BUFFER_BIT);
+  gl.disable(gl.DEPTH_TEST); gl.useProgram(P_SKY.p);
+  gl.uniformMatrix4fv(P_SKY.u.uInvVP, false, M4.inv(VP)); gl.uniform3fv(P_SKY.u.uCam, cam.eye);
+  gl.uniform3fv(P_SKY.u.uSun, ENV.sun); gl.uniform3fv(P_SKY.u.uSunCol, ENV.sunCol);
+  gl.uniform3fv(P_SKY.u.uZen, ENV.zen); gl.uniform3fv(P_SKY.u.uHor, ENV.hor); gl.uniform3fv(P_SKY.u.uLow, ENV.low);
+  gl.bindVertexArray(null); gl.drawArrays(gl.TRIANGLES, 0, 3);
+  gl.enable(gl.DEPTH_TEST);
+
+  // 3) 实体、描边、半透明
+  const u = P_MAIN.u; gl.useProgram(P_MAIN.p);
+  gl.uniformMatrix4fv(u.uVP, false, VP); gl.uniformMatrix4fv(u.uLightVP, false, LVP);
+  gl.uniform3fv(u.uSun, ENV.sun); gl.uniform3fv(u.uSunCol, ENV.sunCol); gl.uniform3fv(u.uSkyCol, ENV.skyCol);
+  gl.uniform3fv(u.uGndCol, ENV.gndCol); gl.uniform3fv(u.uCam, cam.eye); gl.uniform3fv(u.uFogCol, ENV.fogCol);
+  gl.uniform3fv(u.uOutCol, ENV.outCol); gl.uniform1f(u.uFog, ENV.fog); gl.uniform2f(u.uRes, W, H);
+  gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, shTex); gl.uniform1i(u.uShadow, 0);
+  const draw = n => {
+    gl.uniformMatrix4fv(u.uModel, false, n.world); gl.uniformMatrix3fv(u.uNM, false, M4.nm(n.world));
+    gl.bindVertexArray(n.mesh.vao); gl.drawElements(gl.TRIANGLES, n.mesh.count, n.mesh.type, 0);
+  };
+  gl.uniform1f(u.uOutline, 0); gl.uniform1f(u.uAlpha, 1);
+  for (const n of DRAW) if (n.wvis && n.alpha === 1) {
+    gl.uniform1f(u.uSoft, n.soft); gl.uniform1f(u.uRecv, n.recv ? 1 : 0); gl.uniform1f(u.uGlow, n.glow); draw(n);
+  }
+  gl.enable(gl.CULL_FACE); gl.cullFace(gl.FRONT);
+  for (const n of DRAW) if (n.wvis && n.outline > 0 && n.alpha === 1) { gl.uniform1f(u.uOutline, n.outline * dpr); draw(n); }
+  gl.disable(gl.CULL_FACE); gl.uniform1f(u.uOutline, 0);
+  gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA); gl.depthMask(false);
+  for (const n of DRAW) if (n.wvis && n.alpha < 1) {
+    gl.uniform1f(u.uSoft, n.soft); gl.uniform1f(u.uRecv, 0); gl.uniform1f(u.uGlow, n.glow); gl.uniform1f(u.uAlpha, n.alpha); draw(n);
+  }
+  gl.depthMask(true); gl.disable(gl.BLEND);
+}
+/* =====================================================================
+   二、几何体构造器：球、柱、环、放样、方块、拉伸板；顶点带颜色与光泽
+   ===================================================================== */
+const colCache = {};
+const C = (hex, gloss = .12) => colCache[hex + gloss] || (colCache[hex + gloss] = [...lin(hex), gloss]);
+const X = (p = [0, 0, 0], r = [0, 0, 0], s = [1, 1, 1]) =>            // 平移 · 偏航 · 俯仰 · 滚转 · 缩放
+  M4.chain(M4.tr(p[0], p[1], p[2]), M4.ry(r[1]), M4.rx(r[0]), M4.rz(r[2]), typeof s === 'number' ? M4.sc(s) : M4.sc(s[0], s[1], s[2]));
+
+class Geo {
+  constructor() { this.pos = []; this.nor = []; this.col = []; this.idx = []; }
+  _ctx(m) {
+    if (!m) return { m: null, n: null, flip: false };
+    const n = M4.nm(m), det = m[0] * n[0] + m[4] * n[3] + m[8] * n[6];
+    return { m, n: det < 0 ? n.map(v => -v) : n, flip: det < 0 };
+  }
+  _v(x, p, n, c) {
+    const P = x.m ? M4.pt(x.m, p) : p, q = x.n;
+    const N = V.norm(q ? [q[0]*n[0] + q[3]*n[1] + q[6]*n[2], q[1]*n[0] + q[4]*n[1] + q[7]*n[2], q[2]*n[0] + q[5]*n[1] + q[8]*n[2]] : n);
+    const cc = typeof c === 'function' ? c(P, p) : c;
+    this.pos.push(P[0], P[1], P[2]); this.nor.push(N[0], N[1], N[2]); this.col.push(cc[0], cc[1], cc[2], cc[3]);
+    return this.pos.length / 3 - 1;
+  }
+  _tri(x, a, b, c) { x.flip ? this.idx.push(a, c, b) : this.idx.push(a, b, c); }
+  _quad(x, a, b, c, d) { this._tri(x, a, b, c); this._tri(x, a, c, d); }
+
+  sphere(m, c, su = 20, sv = 12) {
+    const x = this._ctx(m), base = this.pos.length / 3;
+    for (let j = 0; j <= sv; j++) {
+      const th = PI * j / sv, y = cos(th), r = sin(th);
+      for (let i = 0; i <= su; i++) { const ph = TAU * i / su, p = [r * cos(ph), y, r * sin(ph)]; this._v(x, p, p, c); }
+    }
+    for (let j = 0; j < sv; j++) for (let i = 0; i < su; i++) {
+      const a = base + j * (su + 1) + i, b = a + su + 1; this._quad(x, a, a + 1, b + 1, b);
+    }
+    return this;
+  }
+  cyl(m, c, rT = 1, rB = 1, seg = 16, cap = true) {           // 轴沿 Y，y∈[0,1]
+    const x = this._ctx(m), base = this.pos.length / 3, sl = rB - rT;
+    for (let i = 0; i <= seg; i++) {
+      const a = TAU * i / seg, cs = cos(a), sn = sin(a), n = [cs, sl, sn];
+      this._v(x, [rB * cs, 0, rB * sn], n, c); this._v(x, [rT * cs, 1, rT * sn], n, c);
+    }
+    for (let i = 0; i < seg; i++) { const a = base + i * 2; this._quad(x, a, a + 1, a + 3, a + 2); }
+    if (cap) for (const [y, r, ny] of [[0, rB, -1], [1, rT, 1]]) {
+      if (r <= 0) continue;
+      const ce = this._v(x, [0, y, 0], [0, ny, 0], c), b = this.pos.length / 3;
+      for (let i = 0; i <= seg; i++) { const a = TAU * i / seg; this._v(x, [r * cos(a), y, r * sin(a)], [0, ny, 0], c); }
+      for (let i = 0; i < seg; i++) ny > 0 ? this._tri(x, ce, b + i + 1, b + i) : this._tri(x, ce, b + i, b + i + 1);
+    }
+    return this;
+  }
+  rod(a, b, r, c, seg = 10, r2 = r) { return this.cyl(M4.between(a, b, 1), c, r2, r, seg); }   // a→b 的圆杆
+  torus(m, c, R, r, sR = 28, sr = 10) {                       // 环面在 XZ 平面
+    const x = this._ctx(m), base = this.pos.length / 3;
+    for (let i = 0; i <= sR; i++) {
+      const a = TAU * i / sR, ca = cos(a), sa = sin(a);
+      for (let j = 0; j <= sr; j++) {
+        const b = TAU * j / sr, cb = cos(b), sb = sin(b);
+        this._v(x, [(R + r * cb) * ca, r * sb, (R + r * cb) * sa], [cb * ca, sb, cb * sa], c);
+      }
+    }
+    for (let i = 0; i < sR; i++) for (let j = 0; j < sr; j++) {
+      const a = base + i * (sr + 1) + j, b = a + sr + 1; this._quad(x, a, a + 1, b + 1, b);
+    }
+    return this;
+  }
+  loft(secs, c, seg = 16, caps = true, up = [0, 1, 0], m = null) {   // 沿路径放样椭圆截面：{c:[x,y,z], rx, ry, col?}
+    const x = this._ctx(m), n = secs.length, P = [], T = [];
+    let v = null;
+    for (let i = 0; i < n; i++) {
+      const t = V.norm(V.sub(secs[min(n - 1, i + 1)].c, secs[max(0, i - 1)].c));
+      let w = v || up; w = V.sub(w, V.mul(t, V.dot(w, t)));
+      if (V.len(w) < 1e-4) { w = abs(t[0]) < .9 ? [1, 0, 0] : [0, 0, 1]; w = V.sub(w, V.mul(t, V.dot(w, t))); }
+      v = V.norm(w);
+      const u = V.cross(v, t), s = secs[i], ring = [];
+      for (let j = 0; j <= seg; j++) {
+        const a = TAU * j / seg, cu = cos(a) * s.rx, sv = sin(a) * (s.ry === undefined ? s.rx : s.ry);
+        ring.push([s.c[0] + u[0] * cu + v[0] * sv, s.c[1] + u[1] * cu + v[1] * sv, s.c[2] + u[2] * cu + v[2] * sv]);
+      }
+      P.push(ring); T.push(t);
+    }
+    const base = this.pos.length / 3;
+    for (let i = 0; i < n; i++) for (let j = 0; j <= seg; j++) {
+      const dj = V.sub(P[i][(j + 1) % seg], P[i][(j + seg - 1) % seg]), di = V.sub(P[min(n - 1, i + 1)][j], P[max(0, i - 1)][j]);
+      let nn = V.cross(dj, di);
+      if (V.len(nn) < 1e-9) nn = i === 0 ? V.mul(T[0], -1) : T[n - 1];
+      this._v(x, P[i][j], nn, secs[i].col || c);
+    }
+    for (let i = 0; i < n - 1; i++) for (let j = 0; j < seg; j++) {
+      const a = base + i * (seg + 1) + j, b = a + seg + 1; this._quad(x, a, a + 1, b + 1, b);
+    }
+    if (caps) for (const [i, sg] of [[0, -1], [n - 1, 1]]) {
+      if (secs[i].rx < 1e-4) continue;
+      const nn = V.mul(T[i], sg), cc = secs[i].col || c, ce = this._v(x, secs[i].c, nn, cc), b = this.pos.length / 3;
+      for (let j = 0; j <= seg; j++) this._v(x, P[i][j], nn, cc);
+      for (let j = 0; j < seg; j++) sg < 0 ? this._tri(x, ce, b + j + 1, b + j) : this._tri(x, ce, b + j, b + j + 1);
+    }
+    return this;
+  }
+  tube(pts, r, c, seg = 10, up) {                              // 沿折线/曲线的圆管，r 可为数或函数(t)
+    return this.loft(pts.map((p, i) => ({ c: p, rx: typeof r === 'function' ? r(i / (pts.length - 1)) : r })), c, seg, true, up);
+  }
+  box(m, c) {
+    const x = this._ctx(m);
+    for (const [n, u, v] of [[[1,0,0],[0,1,0],[0,0,1]], [[-1,0,0],[0,0,1],[0,1,0]], [[0,1,0],[0,0,1],[1,0,0]],
+      [[0,-1,0],[1,0,0],[0,0,1]], [[0,0,1],[1,0,0],[0,1,0]], [[0,0,-1],[0,1,0],[1,0,0]]]) {
+      const q = [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([a, b]) =>
+        this._v(x, [(n[0] + u[0] * a + v[0] * b) / 2, (n[1] + u[1] * a + v[1] * b) / 2, (n[2] + u[2] * a + v[2] * b) / 2], n, c));
+      this._quad(x, q[0], q[1], q[2], q[3]);
+    }
+    return this;
+  }
+  slab(pts, y0, y1, m, c) {                                    // XZ 平面内的多边形 [[x,z]...] 拉伸成板
+    const x = this._ctx(m), n = pts.length;
+    let ar = 0, cx = 0, cz = 0;
+    for (let i = 0; i < n; i++) { const a = pts[i], b = pts[(i + 1) % n]; ar += a[0] * b[1] - b[0] * a[1]; cx += a[0] / n; cz += a[1] / n; }
+    const q = ar < 0 ? pts.slice().reverse() : pts;
+    for (const [y, ny] of [[y1, 1], [y0, -1]]) {
+      const ce = this._v(x, [cx, y, cz], [0, ny, 0], c), b = this.pos.length / 3;
+      for (let i = 0; i < n; i++) this._v(x, [q[i][0], y, q[i][1]], [0, ny, 0], c);
+      for (let i = 0; i < n; i++) ny > 0 ? this._tri(x, ce, b + (i + 1) % n, b + i) : this._tri(x, ce, b + i, b + (i + 1) % n);
+    }
+    for (let i = 0; i < n; i++) {
+      const a = q[i], b = q[(i + 1) % n], nn = [b[1] - a[1], 0, a[0] - b[0]];
+      const v0 = this._v(x, [a[0], y0, a[1]], nn, c), v1 = this._v(x, [a[0], y1, a[1]], nn, c);
+      const v2 = this._v(x, [b[0], y1, b[1]], nn, c), v3 = this._v(x, [b[0], y0, b[1]], nn, c);
+      this._quad(x, v0, v1, v2, v3);
+    }
+    return this;
+  }
+  build() {
+    const n = this.pos.length / 3, d = new Float32Array(n * 10);
+    for (let i = 0; i < n; i++) {
+      d.set(this.pos.slice(i * 3, i * 3 + 3), i * 10); d.set(this.nor.slice(i * 3, i * 3 + 3), i * 10 + 3);
+      d.set(this.col.slice(i * 4, i * 4 + 4), i * 10 + 6);
+    }
+    const vao = gl.createVertexArray(); gl.bindVertexArray(vao);
+    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer()); gl.bufferData(gl.ARRAY_BUFFER, d, gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 40, 0);
+    gl.enableVertexAttribArray(1); gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 40, 12);
+    gl.enableVertexAttribArray(2); gl.vertexAttribPointer(2, 4, gl.FLOAT, false, 40, 24);
+    const big = n > 65535, ix = big ? new Uint32Array(this.idx) : new Uint16Array(this.idx);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, gl.createBuffer()); gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, ix, gl.STATIC_DRAW);
+    gl.bindVertexArray(null);
+    return { vao, count: ix.length, type: big ? gl.UNSIGNED_INT : gl.UNSIGNED_SHORT };
+  }
+}
+const geo = fn => { const g = new Geo(); fn(g); return g.build(); };
+const starPts = (n, R, r) => Array.from({ length: n * 2 }, (_, i) => {
+  const a = PI * i / n - PI / 2, q = i % 2 ? r : R; return [q * cos(a), q * sin(a)];
+});
+/* =====================================================================
+   三、布景与演员建模。坐标：+X 机头方向，+Y 向上，+Z 飞机右侧；单位米
+   ===================================================================== */
+const K = {
+  red: C('#d63a30', .35), red2: C('#a82a25', .3), gold: C('#f6bf3a', .6), yel: C('#f8cd3f', .3), cream: C('#f6ecd4', .2),
+  white: C('#fbfaf5', .15), dark: C('#2b2f3c', .35), metal: C('#8a93a5', .65), tire: C('#22252e', .08), wood: C('#6a4630', .2),
+  black: C('#15171f', .1)
+};
+const OUT = 1.7, WING_Y = 1.25, WING_TOP = 1.386;
+const plane = new Node(root);
+
+const planeMesh = geo(g => {
+  // 机身：从机头到机尾放样
+  const F = [[2.62, .56, .56, 0, K.gold], [2.3, .6, .6, 0, K.gold], [2.3, .6, .6, 0, K.red], [1.6, .61, .63, 0], [.4, .59, .63, 0],
+    [-.8, .55, .59, 0], [-2, .43, .47, .04], [-3.2, .27, .33, .12], [-3.85, .15, .21, .18, K.red], [-3.85, .15, .21, .18, K.gold],
+    [-4.15, .09, .14, .21, K.gold], [-4.32, 0, 0, .22, K.gold]];
+  g.loft(F.map(([x, rz, ry, cy, col]) => ({ c: [x, cy, 0], rx: rz, ry, col })), K.red, 28);
+  // 发动机罩
+  g.cyl(M4.between([2.5, 0, 0], [3.16, 0, 0], .66), K.dark, 1, 1, 28);
+  g.torus(X([3.16, 0, 0], [0, 0, -PI / 2]), K.gold, .6, .06, 28, 8);
+  g.cyl(M4.between([3.1, 0, 0], [3.17, 0, 0], .54), K.black, 1, 1, 24);
+  // 上下机翼
+  const wing = (x0, y0, half, chord, th, dih, main, tip) => {
+    const S = [], hs = [[1, .1, tip], [.99, .55, tip], [.965, .86, tip], [.92, 1, tip], [.92, 1, K.white], [.885, 1, K.white],
+      [.885, 1, main], [.5, 1, main], [0, 1, main]];
+    const add = (z, k, col) => S.push({ c: [x0, y0 + dih * abs(z), z], rx: chord / 2 * k, ry: th / 2 * min(1, k * 1.4), col });
+    for (const [f, k, col] of hs) add(-f * half, k, col);
+    for (const [f, k, col] of hs.slice(0, -1).reverse()) add(f * half, k, col);
+    g.loft(S, main, 22);
+  };
+  wing(.45, WING_Y, 5.1, 2.0, .18, .02, K.yel, K.red);
+  wing(.2, -.38, 4.5, 1.6, .16, .03, K.yel, K.red);
+  wing(-3.75, .24, 1.75, .95, .08, 0, K.yel, K.red);                    // 水平尾翼
+  for (const z of [-3.75, 3.75]) [[.52, K.white], [.4, K.red], [.2, K.gold]].forEach(([r, col], i) =>
+    g.cyl(X([.45, WING_Y + .075 + .092 + i * .004, z], [0, 0, 0], [r, .004, r]), col, 1, 1, 30));
+  // 翼间支柱与张线
+  for (const s of [-1, 1]) {
+    g.rod([.85, -.3, 3.1 * s], [1.15, WING_Y + .02, 3.1 * s], .045, K.cream, 8);
+    g.rod([-.4, -.3, 3.1 * s], [-.2, WING_Y + .02, 3.1 * s], .045, K.cream, 8);
+    g.rod([.85, -.3, 3.1 * s], [-.2, WING_Y + .02, 3.1 * s], .012, K.dark, 6);
+    g.rod([-.4, -.3, 3.1 * s], [1.15, WING_Y + .02, 3.1 * s], .012, K.dark, 6);
+    g.rod([1.0, .45, .42 * s], [1.1, WING_Y - .04, .62 * s], .04, K.cream, 8);
+    g.rod([-.1, .5, .42 * s], [-.15, WING_Y - .04, .62 * s], .04, K.cream, 8);
+    // 起落架
+    g.torus(X([1.25, -1.22, .95 * s], [PI / 2, 0, 0]), K.tire, .3, .12, 24, 10);
+    g.cyl(M4.between([1.25, -1.22, .95 * s - .08], [1.25, -1.22, .95 * s + .08], .2), K.gold, 1, 1, 18);
+    g.rod([1.55, -.42, .4 * s], [1.25, -1.2, .8 * s], .045, K.dark, 8);
+    g.rod([.75, -.42, .4 * s], [1.25, -1.2, .8 * s], .045, K.dark, 8);
+  }
+  g.rod([1.25, -1.22, -.95], [1.25, -1.22, .95], .035, K.dark, 8);
+  g.torus(X([-3.9, -.3, 0], [PI / 2, 0, 0]), K.tire, .1, .05, 14, 8);
+  g.rod([-3.7, .02, 0], [-3.9, -.3, 0], .03, K.dark, 6);
+  // 垂直尾翼与徽记
+  g.slab([[-3.1, .28], [-3.55, 1.3], [-4.0, 1.46], [-4.4, 1.28], [-4.46, .25]], -.04, .04, M4.rx(-PI / 2), K.red);
+  g.cyl(M4.between([-3.88, .82, -.052], [-3.88, .82, .052], .27), K.gold, 1, 1, 24);
+  g.cyl(M4.between([-3.88, .82, -.058], [-3.88, .82, .058], .13), K.red, 1, 1, 20);
+  // 座舱口、头靠整流罩
+  g.cyl(X([-1.25, .578, 0], [0, 0, 0], [.46, .012, .36]), K.black, 1, 1, 24);
+  g.torus(X([-1.25, .6, 0], [0, 0, 0], [1.25, 1, 1]), K.wood, .37, .055, 26, 8);
+  g.loft([{ c: [-1.66, .5, 0], rx: .3, ry: .17 }, { c: [-2.2, .48, 0], rx: .26, ry: .14 }, { c: [-3, .38, 0], rx: .14, ry: .08 },
+    { c: [-3.4, .34, 0], rx: 0, ry: 0 }], K.red, 14);
+  // 绑在机身侧面的金箍棒
+  g.rod([-2.5, -.05, .5], [1.5, -.05, .68], .055, K.red, 12);
+  g.rod([-2.72, -.05, .492], [-2.5, -.05, .5], .068, K.gold, 12);
+  g.rod([1.5, -.05, .68], [1.72, -.05, .688], .068, K.gold, 12);
+});
+new Node(plane, planeMesh, { outline: OUT });
+const prop = new Node(plane, geo(g => {
+  g.sphere(X([.1, 0, 0], [0, 0, 0], [.32, .17, .17]), K.gold, 16, 10);
+  for (const s of [-1, 1]) {
+    g.sphere(X([0, .64 * s, 0], [0, .5 * s, 0], [.035, .62, .12]), K.wood, 12, 8);
+    g.sphere(X([0, 1.13 * s, 0], [0, .5 * s, 0], [.037, .13, .1]), K.yel, 10, 6);
+  }
+}), { outline: OUT }).at(3.3, 0, 0);
+new Node(plane, geo(g => g.cyl(M4.between([3.3, 0, 0], [3.315, 0, 0], 1.24), C('#fff4d8', 0), 1, 1, 40)), { alpha: .13, shadow: false });
+new Node(plane, geo(g => g.box(X([-.8, .8, 0], [0, 0, .5], [.02, .38, .62]), C('#cfeaff', .9))), { alpha: .38, shadow: false });
+
+/* ---------- 孙悟空（驾驶舱里的半身） ---------- */
+Object.assign(K, {
+  fur: C('#b9762c', .08), skin: C('#f6cfa6', .1), muzzle: C('#ffe3c2', .1), eye: C('#ffffff', .5), pupil: C('#1b1d26', .7),
+  scarf: C('#ffd23f', .15), lens: C('#39424f', .9), brow: C('#ffcf40', .2)
+});
+function chain(parent, n, len, meshOf, opt) {          // 首尾相接的一串节点，每节沿自身 +Y 伸出 len
+  const arr = []; let p = parent;
+  for (let i = 0; i < n; i++) { const nd = new Node(p, meshOf(i), opt); if (i) nd.p = [0, len, 0]; arr.push(nd); p = nd; }
+  return arr;
+}
+const wk = new Node(plane).at(-1.25, .5, 0);
+new Node(wk, geo(g => {
+  g.sphere(X([0, .2, 0], [0, 0, 0], [.23, .3, .3]), K.red, 18, 12);                       // 上身
+  g.torus(X([0, .43, 0]), K.gold, .15, .05, 18, 8);                                        // 金领
+  for (const s of [-1, 1]) g.sphere(X([0, .37, .29 * s], [0, 0, 0], [.13, .1, .12]), K.gold, 12, 8);   // 肩甲
+  // 右臂手搭凉棚，左手扶着舱沿
+  g.rod([0, .36, -.3], [.14, .52, -.46], .065, K.fur, 8, .055); g.rod([.14, .52, -.46], [.25, .93, -.2], .055, K.fur, 8, .045);
+  g.sphere(X([.27, .96, -.16], [0, 0, 0], [.1, .035, .075]), K.skin, 10, 6);
+  g.rod([0, .36, .3], [.2, .2, .36], .065, K.fur, 8, .055); g.rod([.2, .2, .36], [.38, .12, .3], .055, K.fur, 8, .045);
+  g.sphere(X([.4, .12, .29], [0, 0, 0], [.06, .05, .06]), K.skin, 8, 6);
+}), { outline: OUT });
+const wkHead = new Node(wk).at(.03, .74, 0);
+new Node(wkHead, geo(g => {
+  g.sphere(X([0, 0, 0], [0, 0, 0], [.25, .25, .25]), K.fur, 22, 14);
+  g.sphere(X([.165, -.015, 0], [0, 0, 0], [.1, .185, .2]), K.skin, 18, 12);                // 脸
+  g.sphere(X([.215, .165, 0], [0, 0, 0], [.05, .075, .075]), K.fur, 10, 8);                 // 额头的毛尖
+  g.sphere(X([.235, -.095, 0], [0, 0, 0], [.09, .085, .125]), K.muzzle, 14, 10);            // 嘴部
+  g.sphere(X([.325, -.055, 0], [0, 0, 0], [.02, .02, .03]), K.pupil, 8, 6);
+  g.sphere(X([.305, -.14, 0], [0, 0, 0], [.018, .02, .075]), C('#7a2c22', .2), 10, 6);     // 咧开的嘴
+  for (const s of [-1, 1]) {
+    g.sphere(X([.2, .055, .098 * s], [0, 0, 0], [.035, .08, .085]), K.red, 10, 8);          // 火眼金睛的红眼影
+    g.sphere(X([.232, .05, .09 * s], [0, 0, 0], [.03, .052, .052]), K.eye, 10, 8);
+    g.sphere(X([.256, .05, .084 * s], [0, 0, 0], [.014, .028, .028]), K.pupil, 8, 6);
+    g.sphere(X([.245, .125, .09 * s], [0, 0, .5 * s], [.02, .017, .06]), K.brow, 8, 6);
+    g.sphere(X([0, -.01, .245 * s], [0, 0, 0], [.05, .075, .04]), K.skin, 10, 8);           // 耳朵
+    // 推到额头上的飞行镜
+    g.cyl(M4.between([.2, .205, .095 * s], [.238, .215, .1 * s], .062), K.lens, 1, 1, 14);
+    g.torus(X([.238, .215, .1 * s], [0, 0, -PI / 2 + .25]), K.gold, .062, .012, 14, 6);
+  }
+  g.torus(X([0, .205, 0], [0, 0, .12]), K.wood, .252, .014, 24, 6);                         // 镜带
+  g.torus(X([0, .1, 0], [0, 0, .1]), K.gold, .256, .022, 28, 8);                            // 金箍
+  for (const s of [-1, 1]) g.sphere(X([.255, .135, .03 * s], [0, 0, 0], .028), K.gold, 8, 6);
+}), { outline: OUT });
+const featherMesh = [0, 1].map(k => geo(g => {
+  g.sphere(X([0, .12, 0], [0, 0, 0], [.035, .135, .012]), k ? C('#8a4b20', .2) : C('#f4e3c0', .2), 8, 6);
+}));
+const wkFeathers = [-1, 1].map(s => {
+  const a = chain(wkHead, 8, .2, i => featherMesh[i % 2], { outline: OUT });
+  a[0].at(-.08, .22, .08 * s); return a;
+});
+const scarfMesh = geo(g => g.sphere(X([0, .1, 0], [0, 0, 0], [.012, .115, .06]), K.scarf, 8, 6));
+const wkScarf = [-1, 1].map(s => { const a = chain(wk, 5, .17, () => scarfMesh, { outline: OUT }); a[0].at(-.14, .44, .06 * s); return a; });
+
+/* ---------- 自行车（停在右上机翼上，车头朝前） ---------- */
+Object.assign(K, {
+  pel: C('#fffdf7', .1), pel2: C('#e1e6ee', .1), tip: C('#3a3f4d', .2), beak: C('#ffb545', .35), beak2: C('#f08a24', .35),
+  pouch: C('#ffd866', .3), leg: C('#ff9336', .25), band: C('#e5484d', .2), frame: C('#e23b3b', .6), frame2: C('#b02c2c', .5),
+  basket: C('#b88752', .1)
+});
+const stack = new Node(plane).at(.45, WING_TOP, 2.3);
+const bike = new Node(stack);
+const RW = .34, RA = [-.53, RW, 0], FA = [.55, RW, 0], BB = [-.06, .3, 0], ST = [-.24, .8, 0], HT = [.33, .86, 0], HB = [.37, .68, 0];
+new Node(bike, geo(g => {
+  const t = (a, b, r = .022, c = K.frame) => g.rod(a, b, r, c, 8);
+  t(ST, HT); t(HB, BB, .026); t(BB, [-.265, .9, 0]); t(HT, HB, .03);
+  for (const s of [-1, 1]) {
+    t(V.add(BB, [0, 0, .03 * s]), V.add(RA, [0, 0, .05 * s]), .015, K.frame2);
+    t(V.add(ST, [0, 0, .02 * s]), V.add(RA, [0, 0, .05 * s]), .014, K.frame2);
+    t(V.add(HB, [0, 0, .03 * s]), V.add(FA, [0, 0, .05 * s]), .017, K.frame2);
+    t([.31, .99, .17 * s], [.31, .99, .26 * s], .024, K.tire);                              // 车把套
+  }
+  t(HT, [.31, .99, 0], .018, K.metal); t([.31, .99, -.24], [.31, .99, .24], .016, K.metal);
+  g.sphere(X([-.27, .925, 0], [0, 0, 0], [.15, .035, .085]), K.wood, 14, 8);                  // 车座
+  g.cyl(X([.62, .74, 0], [0, 0, 0], [1, .2, 1]), K.basket, .17, .125, 18);                    // 车筐
+  g.torus(X([.62, .94, 0]), K.wood, .17, .016, 18, 6);
+  t([.33, .9, 0], [.48, .86, 0], .012, K.metal);
+  t([-.06, .385, .06], [-.53, .385, .06], .007, K.tire); t([-.06, .215, .06], [-.53, .295, .06], .007, K.tire);   // 链条
+  g.cyl(M4.between([-.53, RW, .045], [-.53, RW, .075], .045), K.metal, 1, 1, 12);
+}), { outline: OUT });
+const wheelMesh = geo(g => {
+  g.torus(M4.rx(PI / 2), K.tire, .3, .04, 30, 8);
+  g.torus(M4.rx(PI / 2), K.metal, .262, .012, 30, 6);
+  for (let i = 0; i < 14; i++) {
+    const a = TAU * i / 14; g.rod([0, 0, i % 2 ? .025 : -.025], [.26 * cos(a), .26 * sin(a), 0], .004, K.metal, 4);
+  }
+  g.cyl(M4.between([0, 0, -.045], [0, 0, .045], .028), K.metal, 1, 1, 10);
+  g.box(X([.19, 0, 0], [0, 0, 0], [.07, .028, .014]), K.beak2); g.box(X([-.19, 0, 0], [0, 0, 0], [.07, .028, .014]), K.white);
+});
+const wheels = [RA, FA].map(p => new Node(bike, wheelMesh, { outline: OUT }).at(p[0], p[1], p[2]));
+const crank = new Node(bike, geo(g => {
+  g.torus(X([0, 0, .06], [PI / 2, 0, 0]), K.metal, .085, .012, 20, 6);
+  g.rod([0, 0, -.095], [0, 0, .095], .018, K.metal, 8);
+  g.rod([0, 0, .09], [.17, 0, .09], .014, K.dark, 6); g.rod([0, 0, -.09], [-.17, 0, -.09], .014, K.dark, 6);
+}), { outline: OUT }).at(BB[0], BB[1], 0);
+const pedalMesh = geo(g => { g.box(M4.sc(.11, .02, .08), K.dark); g.box(M4.sc(.112, .012, .03), K.beak2); });
+
+/* ---------- 鹈鹕（骑手） ---------- */
+const pel = new Node(stack);
+new Node(pel, geo(g => {
+  g.sphere(X([-.2, 1.27, 0], [0, 0, .38], [.47, .3, .27]), K.pel, 24, 16);                    // 身体
+  g.sphere(X([.06, 1.37, 0], [0, 0, 0], [.2, .21, .2]), K.pel, 16, 12);                       // 胸
+  for (const [z, a] of [[-.07, .25], [0, 0], [.07, -.25]])
+    g.sphere(X([-.66, 1.08, z], [0, a, -.35], [.17, .02, .06]), K.pel2, 10, 6);               // 尾羽
+  // 右翅握车把
+  g.rod([0, 1.46, .2], [.2, 1.3, .31], .075, K.pel, 10, .06); g.rod([.2, 1.3, .31], [.3, 1.02, .22], .06, K.pel, 10, .045);
+  g.sphere(X([.2, 1.3, .31], [0, 0, 0], .07), K.pel, 10, 8);
+  for (let i = 0; i < 4; i++)
+    g.sphere(X([.05 + i * .06, 1.36 - i * .075, .27 + i * .012], [0, 0, -.9 - i * .1], [.11, .014, .04]), i > 2 ? K.tip : K.pel2, 8, 6);
+  for (const dz of [-.03, .01, .05]) g.sphere(X([.31, 1.0, .2 + dz], [0, 0, -.4], [.05, .022, .016]), K.tip, 8, 6);
+  // 左翅高举：上臂、前臂和挂着的飞羽
+  const S = [-.02, 1.48, -.2], E = [-.32, 2.0, -.3], W = [-.2, 2.52, -.22];
+  g.rod(S, E, .085, K.pel, 10, .07); g.rod(E, W, .07, K.pel, 10, .055); g.sphere(X(E, [0, 0, 0], .078), K.pel, 10, 8);
+  g.sphere(X([-.2, 2.56, -.22], [0, 0, 0], .07), K.pel, 10, 8);
+  for (let i = 0; i < 5; i++) {
+    const p = V.lerp(S, E, .15 + i * .2), q = V.lerp(E, W, .1 + i * .2);
+    g.sphere(X([p[0] - .1, p[1] - .02, p[2]], [0, 0, .5 + i * .08], [.16, .016, .05]), K.pel2, 8, 6);
+    g.sphere(X([q[0] - .11, q[1], q[2]], [0, 0, -.2 - i * .05], [.17, .016, .05]), i > 2 ? K.tip : K.pel2, 8, 6);
+  }
+}), { outline: OUT });
+const legM1 = geo(g => { g.cyl(null, K.pel, .5, 1, 12); g.sphere(M4.sc(1, .1, 1), K.pel, 10, 6); });
+const legM2 = geo(g => g.cyl(null, K.leg, .8, 1, 10));
+const footMesh = geo(g => {
+  g.sphere(X([.05, 0, 0], [0, 0, 0], [.1, .022, .065]), K.leg, 12, 6);
+  for (const dz of [-.045, 0, .045]) g.sphere(X([.14, 0, dz], [0, -dz * 5, 0], [.05, .016, .02]), K.leg, 8, 4);
+});
+const legs = [1, -1].map(s => ({ s, th: new Node(stack, legM1, { outline: OUT }), sh: new Node(stack, legM2, { outline: OUT }),
+  ft: new Node(stack, footMesh, { outline: OUT }), pd: new Node(bike, pedalMesh, { outline: OUT }) }));
+const neckMesh = geo(g => { g.cyl(M4.sc(.095, .145, .095), K.pel, .94, 1, 12, false); g.sphere(M4.sc(.097), K.pel, 12, 8); });
+const neck = chain(pel, 5, .14, () => neckMesh, { outline: OUT });
+neck[0].at(.1, 1.5, 0);
+const head = new Node(neck[4]).at(0, .16, 0);
+new Node(head, geo(g => {
+  g.sphere(M4.sc(.165), K.pel, 20, 14);
+  g.sphere(X([-.1, .1, 0], [0, 0, .5], [.1, .05, .09]), K.pel, 10, 8);
+  for (const s of [-1, 1]) {
+    g.sphere(X([.085, .03, .125 * s], [0, 0, 0], [.07, .07, .045]), K.pouch, 12, 8);
+    g.sphere(X([.1, .04, .14 * s], [0, 0, 0], [.04, .045, .03]), K.eye, 10, 8);
+    g.sphere(X([.115, .04, .158 * s], [0, 0, 0], [.02, .024, .014]), K.pupil, 8, 6);
+  }
+  g.torus(X([0, .075, 0], [0, 0, .15]), K.band, .16, .028, 24, 8);                            // 头带
+  g.sphere(X([-.165, .05, 0], [0, 0, 0], .04), K.band, 8, 6);
+  g.loft([{ c: [.1, -.005, 0], rx: .085, ry: .05 }, { c: [.3, -.01, 0], rx: .07, ry: .034 }, { c: [.55, -.03, 0], rx: .05, ry: .022 },
+    { c: [.72, -.05, 0], rx: .034, ry: .016 }, { c: [.76, -.075, 0], rx: .018, ry: .014, col: K.beak2 },
+    { c: [.765, -.1, 0], rx: 0, ry: 0, col: K.beak2 }], K.beak, 12);                            // 上喙
+}), { outline: OUT });
+const jaw = new Node(head).at(.1, -.045, 0);
+new Node(jaw, geo(g => g.loft([{ c: [0, 0, 0], rx: .08, ry: .02 }, { c: [.3, -.005, 0], rx: .062, ry: .016 },
+  { c: [.6, -.02, 0], rx: .035, ry: .012 }, { c: [.64, -.025, 0], rx: 0, ry: 0 }], K.beak, 12)), { outline: OUT });
+const pouch = new Node(jaw, geo(g => g.sphere(X([.27, -.085, 0], [0, 0, -.06], [.29, .1, .062]), K.pouch, 18, 12)), { outline: OUT });
+const bandMesh = geo(g => g.sphere(X([0, .08, 0], [0, 0, 0], [.012, .09, .035]), K.band, 8, 6));
+const bandTails = [-1, 1].map(s => { const a = chain(head, 4, .13, () => bandMesh, { outline: OUT }); a[0].at(-.19, .05, .02 * s); return a; });
+const tray = new Node(pel).at(-.05, 2.6, 0);                                                  // 摊平当托盘的翅尖
+new Node(tray, geo(g => {
+  for (let i = 0; i < 7; i++) {
+    const z = -.27 + i * .09, e = abs(i - 3) / 3;
+    g.sphere(X([0, 0, z], [0, 0, 0], [.52 - e * .1, .022, .058]), K.pel, 12, 6);
+    g.sphere(X([.47 - e * .1, 0, z], [0, 0, 0], [.1, .024, .05]), K.tip, 8, 6);
+  }
+}), { outline: OUT });
+
+/* ---------- 默认姿势 ---------- */
+wkFeathers.forEach(a => a.forEach((n, i) => n.r = [0, 0, i ? .16 : .8]));
+wkScarf.forEach(a => a.forEach((n, i) => n.r = [0, 0, i ? .1 : 1.75]));
+[-.55, .25, .4, -.05, -.3].forEach((a, i) => neck[i].r = [0, 0, a]);
+head.r = [0, 0, .35];
+bandTails.forEach(a => a.forEach((n, i) => n.r = [0, 0, i ? .15 : 1.7]));
+function poseBike(t, bob = 0) {
+  const wa = -t * 9, ca = -t * 3.6;
+  wheels[0].r = [0, 0, wa]; wheels[1].r = [0, 0, wa]; crank.r = [0, 0, ca];
+  for (const L of legs) {
+    const a = ca + (L.s > 0 ? 0 : PI), px = BB[0] + .17 * cos(a), py = BB[1] + .17 * sin(a), z = .125 * L.s;
+    L.pd.p = [px, py, z];
+    const H = [-.17, .98 + bob, .12 * L.s], A = [px - .04, py + .06, z];
+    const dx = A[0] - H[0], dy = A[1] - H[1], d = min(hypot(dx, dy), .865), ux = dx / hypot(dx, dy), uy = dy / hypot(dx, dy);
+    const q = (.45 * .45 - .42 * .42 + d * d) / (2 * d), h = sqrt(max(0, .45 * .45 - q * q));
+    const Kn = [H[0] + q * ux - h * uy, H[1] + q * uy + h * ux, .135 * L.s];
+    L.th.local = M4.between(H, Kn, .09); L.sh.local = M4.between(Kn, A, .034);
+    L.ft.p = [A[0], A[1] - .03, z]; L.ft.r = [0, 0, .25 * sin(a)];
+  }
+}
+
+/* ---------- 北极熊（站在鹈鹕摊平的翅膀上） ---------- */
+Object.assign(K, {
+  bear: C('#f8f6ef', .06), bear2: C('#d9dee8', .06), nose: C('#20222b', .6), robe: C('#24262f', .28), robeR: C('#b3262b', .3),
+  jade: C('#6fd3b0', .75), bronze: C('#c9a35a', .85), hair: C('#16171d', .3), cloud: C('#ffffff', 0)
+});
+const bear = new Node(tray).at(0, .022, 0);
+new Node(bear, geo(g => {
+  g.sphere(X([0, .46, 0], [0, 0, 0], [.42, .235, .245]), K.bear, 22, 14);
+  g.sphere(X([-.27, .48, 0], [0, 0, 0], [.24, .245, .25]), K.bear, 16, 12);
+  g.sphere(X([.22, .51, 0], [0, 0, 0], [.24, .24, .24]), K.bear, 16, 12);
+  g.sphere(X([-.5, .56, 0], [0, 0, 0], .055), K.bear, 8, 6);
+  g.sphere(X([-.03, .475, 0], [0, 0, 0], [.2, .245, .258]), K.robeR, 18, 12);                  // 鞍毯
+  for (const x of [-.21, .15]) g.torus(X([x, .475, 0], [0, 0, PI / 2], [1, 1, 1.05]), K.gold, .25, .014, 24, 6);
+  g.torus(X([.38, .55, 0], [0, 0, PI / 2 - .3]), K.gold, .2, .02, 20, 6);                       // 项圈
+}), { outline: OUT });
+const bearLegMesh = geo(g => {
+  g.rod([0, 0, 0], [0, -.3, 0], .095, K.bear, 10, .085);
+  g.sphere(X([.02, -.32, 0], [0, 0, 0], [.115, .06, .1]), K.bear, 12, 8);
+  for (const dz of [-.05, 0, .05]) g.sphere(X([.118, -.335, dz], [0, 0, 0], .014), K.nose, 6, 4);
+});
+const bearLegs = [[.25, .38, .15], [.25, .38, -.15], [-.3, .38, .16], [-.3, .38, -.16]].map(p =>
+  new Node(bear, bearLegMesh, { outline: OUT }).at(p[0], p[1], p[2]));
+const bearHead = new Node(bear).at(.42, .58, 0);
+new Node(bearHead, geo(g => {
+  g.sphere(X([.1, .02, 0], [0, 0, 0], [.19, .17, .18]), K.bear, 18, 12);
+  g.sphere(X([.25, -.03, 0], [0, 0, 0], [.11, .075, .09]), K.bear, 14, 10);
+  g.sphere(X([.35, -.01, 0], [0, 0, 0], [.03, .028, .04]), K.nose, 8, 6);
+  g.sphere(X([.3, -.088, 0], [0, 0, 0], [.05, .01, .04]), K.nose, 8, 4);
+  for (const s of [-1, 1]) {
+    g.sphere(X([.02, .15, .13 * s], [0, 0, 0], [.05, .055, .035]), K.bear, 10, 8);
+    g.sphere(X([.037, .15, .138 * s], [0, 0, 0], [.025, .03, .02]), K.bear2, 8, 6);
+    g.sphere(X([.22, .05, .1 * s], [0, 0, 0], .022), K.nose, 8, 6);
+  }
+}), { outline: OUT });
+
+/* ---------- 秦始皇（骑在熊背上，右手持剑前指，左手挽缰） ---------- */
+const emp = new Node(bear).at(-.06, .71, 0);
+new Node(emp, geo(g => {
+  g.loft([{ c: [0, -.26, 0], rx: .3, ry: .24 }, { c: [0, -.1, 0], rx: .27, ry: .2 }, { c: [0, .08, 0], rx: .19, ry: .16 },
+    { c: [0, .2, 0], rx: .165, ry: .15 }], K.robe, 18, false);                                  // 垂在熊背两侧的下摆
+  g.torus(X([0, -.25, 0], [0, 0, 0], [.8, 1, 1]), K.robeR, .3, .022, 24, 6);
+  g.loft([{ c: [0, .18, 0], rx: .17, ry: .14 }, { c: [0, .34, 0], rx: .2, ry: .15 }, { c: [0, .47, 0], rx: .21, ry: .14 },
+    { c: [0, .57, 0], rx: .11, ry: .1 }], K.robe, 16);                                           // 上身
+  g.torus(X([0, .2, 0], [0, 0, 0], [.85, 1, 1]), K.gold, .175, .028, 20, 6);                     // 腰带
+  g.sphere(X([.155, .1, 0], [0, 0, 0], [.02, .055, .03]), K.jade, 8, 6);                         // 玉佩
+  for (const s of [-1, 1]) g.rod([.085, .56, .075 * s], [.15, .35, 0], .024, K.robeR, 6);        // 交领
+  // 右臂与青铜剑
+  g.rod([0, .5, .2], [.18, .37, .31], .075, K.robe, 10, .1); g.rod([.18, .37, .31], [.38, .4, .28], .1, K.robe, 10, .13);
+  g.rod([.38, .4, .28], [.405, .404, .277], .136, K.robeR, 12, .136);
+  g.sphere(X([.44, .41, .27], [0, 0, 0], .05), K.skin, 8, 6);
+  g.rod([.4, .385, .27], [.5, .455, .27], .018, K.gold, 6);
+  g.box(X([.51, .462, .27], [0, 0, .61], [.03, .13, .035]), K.gold);
+  g.sphere(X([.875, .718, .27], [0, 0, .61], [.43, .012, .036]), K.bronze, 14, 6);
+  // 左臂与缰绳
+  g.rod([0, .5, -.2], [.16, .36, -.27], .075, K.robe, 10, .095); g.rod([.16, .36, -.27], [.32, .32, -.18], .095, K.robe, 10, .12);
+  g.rod([.32, .32, -.18], [.345, .32, -.172], .126, K.robeR, 12, .126);
+  g.sphere(X([.375, .32, -.165], [0, 0, 0], .048), K.skin, 8, 6);
+  for (const s of [-1, 1]) g.rod([.375, .32, -.165], [.47, -.02, .1 * s], .008, K.robeR, 4);
+}), { outline: OUT });
+const empHead = new Node(emp).at(.02, .7, 0);
+new Node(empHead, geo(g => {
+  g.sphere(M4.sc(.15, .16, .145), K.skin, 18, 12);
+  g.sphere(X([-.065, .045, 0], [0, 0, 0], [.125, .135, .142]), K.hair, 16, 10);
+  for (const s of [-1, 1]) {
+    g.sphere(X([.137, .02, .055 * s], [0, 0, 0], [.014, .014, .026]), K.pupil, 8, 4);
+    g.sphere(X([.137, .068, .06 * s], [-.45 * s, 0, 0], [.012, .012, .045]), K.hair, 8, 4);      // 倒竖的眉
+    g.sphere(X([.142, -.066, .045 * s], [.45 * s, 0, 0], [.014, .012, .055]), K.hair, 8, 4);     // 八字胡
+    g.sphere(X([0, 0, .148 * s], [0, 0, 0], [.03, .045, .02]), K.skin, 8, 6);
+  }
+  g.sphere(X([.157, -.02, 0], [0, 0, 0], [.022, .03, .022]), K.skin, 8, 6);
+  g.cyl(X([-.02, .14, 0], [0, 0, 0], [.085, .1, .085]), K.hair, 1, 1, 14);                       // 冠座与发笄
+  g.rod([-.02, .19, -.17], [-.02, .19, .17], .01, K.gold, 6);
+  g.box(X([0, .265, 0], [0, 0, -.1], [.5, .022, .26]), K.hair);                                  // 冕板
+  g.box(X([0, .25, 0], [0, 0, -.1], [.5, .012, .262]), K.robeR);
+  for (const s of [-1, 1]) g.box(X([.247 * s, .265 - .0247 * s, 0], [0, 0, -.1], [.012, .03, .264]), K.gold);
+}), { outline: OUT });
+const beard = new Node(empHead, geo(g => g.loft([{ c: [0, 0, 0], rx: .06, ry: .035 }, { c: [.02, -.1, 0], rx: .047, ry: .03 },
+  { c: [.03, -.23, 0], rx: 0, ry: 0 }], K.hair, 10)), { outline: OUT }).at(.1, -.1, 0);
+const beadMesh = [3, 5].map(n => geo(g => {                  // 前面的旒短一些，免得挡住脸
+  for (let i = 0; i < n; i++) g.sphere(X([0, -.03 - i * .042, 0], [0, 0, 0], .015), [K.jade, K.white, K.robeR, K.gold, K.jade][i], 8, 6);
+  g.rod([0, 0, 0], [0, -.03 - (n - 1) * .042, 0], .003, K.gold, 4);
+}));
+const beads = [];
+[[.245, .238], [-.245, .288]].forEach(([x, y], k) => {
+  for (let i = 0; i < 7; i++) beads.push(new Node(empHead, beadMesh[k], { outline: 1 }).at(x, y, -.108 + i * .036));
+});
+
+/* ---------- 糖果：12 颗五角星 + 9 颗圆形 = 21，绕着这一摞转 ---------- */
+const FLAV = { apple: C('#7edc5a', .85), peach: C('#ff9fb6', .85), melon: C('#ff5a55', .85) };
+const candyMesh = {};
+for (const k in FLAV) {
+  candyMesh['r' + k] = geo(g => { g.sphere(M4.sc(.105, .105, .07), FLAV[k], 16, 10); g.torus(M4.rx(PI / 2), K.white, .105, .012, 18, 6); });
+  candyMesh['s' + k] = geo(g => g.slab(starPts(5, .14, .062), -.036, .036, M4.rx(PI / 2), FLAV[k]));
+}
+new Node(bike, geo(g => {                                                // 车筐里堆着的糖
+  const fl = Object.values(FLAV);
+  for (let i = 0; i < 9; i++) {
+    const a = i * 2.4, r = i < 6 ? .09 : .03, p = [.62 + r * cos(a), .93 + (i < 6 ? 0 : .05), r * sin(a)];
+    if (i % 2) g.sphere(X(p, [0, 0, 0], [.055, .04, .055]), fl[i % 3], 10, 6);
+    else g.slab(starPts(5, .07, .032), -.02, .02, X(p, [.4, a, 0]), fl[i % 3]);
+  }
+}), { outline: 1.2 });
+const candies = [];
+['apple', 'apple', 'melon', 'apple', 'apple', 'melon', 'peach', 'apple', 'melon', 'apple', 'apple', 'melon'].forEach((k, i) =>
+  candies.push({ n: new Node(stack, candyMesh['s' + k], { outline: 1.3, shadow: false, glow: .12 }), i, ring: 12, R: 1.95, y: 3.35, w: .42, key: k === 'peach' }));
+['melon', 'melon', 'melon', 'melon', 'apple', 'melon', 'melon', 'melon', 'melon'].forEach((k, i) =>
+  candies.push({ n: new Node(stack, candyMesh['r' + k], { outline: 1.3, shadow: false, glow: .12 }), i, ring: 9, R: 1.38, y: 1.15, w: -.6, key: k === 'apple' }));
+/* ---------- 云海与风线 ---------- */
+let seed = 20261110;
+const rnd = () => { seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+const cloudMesh = [0, 1, 2].map(k => geo(g => {
+  const n = 6 + k;
+  for (let i = 0; i < n; i++) {
+    const a = i / n * TAU + k;
+    g.sphere(X([cos(a) * (2.2 + (i % 3) * .9), ((i * 7 + k) % 4) * .4, sin(a) * (1.6 + (i % 2) * .8)], [0, 0, 0],
+      [2.2 + (i % 3) * .5, 1.4 + (i % 2) * .4, 1.9 + ((i + k) % 3) * .4]), K.cloud, 14, 9);
+  }
+  g.sphere(X([0, .2, 0], [0, 0, 0], [3.4, 1.9, 2.8]), K.cloud, 16, 10);
+}));
+const clouds = [];
+const addCloud = (x, y, z, s, flat) => {
+  const n = new Node(root, cloudMesh[clouds.length % 3], { soft: 1, shadow: false, recv: false });
+  n.p = [x, y, z]; n.s = [s, s * flat, s]; n.r = [0, rnd() * TAU, 0]; clouds.push(n);
+};
+for (let gx = -7; gx <= 7; gx++) for (let gz = -7; gz <= 7; gz++)                              // 脚下的云海
+  addCloud(gx * 22 + rnd() * 12, -17 - rnd() * 6, gz * 22 + rnd() * 12, 3.2 + rnd() * 1.8, .75);
+for (let i = 0; i < 34; i++)                                                                   // 航线两侧的云团
+  addCloud(-160 + rnd() * 320, -9 + rnd() * 22, (rnd() < .5 ? -1 : 1) * (17 + rnd() * 85), 1.1 + rnd() * 2.2, .8);
+for (let i = 0; i < 6; i++) addCloud(-160 + rnd() * 320, -8 - rnd() * 3, -8 + rnd() * 16, .7 + rnd() * .5, .7);
+const streakMesh = geo(g => g.box(M4.sc(1, .018, .018), C('#ffffff', 0)));
+const streaks = Array.from({ length: 14 }, () => {
+  const n = new Node(root, streakMesh, { alpha: .2, shadow: false, recv: false });
+  n.p = [-40 + rnd() * 80, -2 + rnd() * 11, -10 + rnd() * 24]; n.s = [3 + rnd() * 5, 1, 1]; return n;
+});
+
+/* =====================================================================
+   四、表演：每一帧给所有演员摆姿势
+   ===================================================================== */
+stack.s = [1.25, 1.25, 1.25];
+const NECK0 = [-.55, .25, .4, -.05, -.3];
+function animate(t, dt, shout) {
+  // 飞机：轻微起伏，右翼因为载重略低
+  plane.p = [0, .3 * sin(t * .8) + .1 * sin(t * 1.9), 0];
+  plane.r = [.035 + .04 * sin(t * .55), 0, .028 * sin(t * .7 + 1)];
+  prop.r = [t * 28, 0, 0];
+  // 孙悟空：手搭凉棚，大半时间扭头看机翼上那一摞
+  const look = ss(-.35, .25, sin(t * .42 + .6));
+  wkHead.r = [.05 * sin(t * 1.3), -.95 * look, .06 + .46 * look + .03 * sin(t * 2.2)];
+  wkFeathers.forEach((a, s) => a.forEach((n, i) => {
+    n.r = [.14 * sin(t * 5 + i * .6 + s * 2) * i / 7, 0, (i ? .15 : .95) + .1 * sin(t * 6.5 - i * .8 + s)];
+  }));
+  wkScarf.forEach((a, s) => a.forEach((n, i) => { n.r = [.25 * sin(t * 9 - i * 1.1 + s * 2), 0, (i ? .06 : 1.72) + .16 * sin(t * 11 - i * 1.3 + s)]; }));
+  // 整摞一起晃，抵消一部分机身的滚转
+  const wob = sin(t * 1.7), wob2 = sin(t * 1.25 + 1);
+  stack.r = [-plane.r[0] * .6 + .025 * wob, .04 * sin(t * .9), .012 * wob2];
+  poseBike(t, .012 * sin(t * 7.2));
+  pel.p = [0, .012 * sin(t * 7.2), 0];
+  // 鹈鹕：脖子随蹬车摆动；喊话时仰头、张大嘴、喉囊鼓起
+  NECK0.forEach((a, i) => neck[i].r = [.03 * sin(t * 1.7 + i), 0, a + .04 * sin(t * 3.6 - i * .7) + (i > 2 ? .12 : -.05) * shout]);
+  head.r = [.05 * sin(t * 1.1), .18 * sin(t * .5) * (1 - shout), .32 + .34 * shout + .04 * sin(t * 3.6)];
+  const yap = shout * (.34 + .2 * abs(sin(t * 12)));
+  jaw.r = [0, 0, -.05 - yap];
+  pouch.s = [1, 1 + .5 * shout + .06 * sin(t * 7), 1 + .2 * shout];
+  bandTails.forEach((a, s) => a.forEach((n, i) => { n.r = [.3 * sin(t * 10 - i + s * 2), 0, (i ? .1 : 1.7) + .2 * sin(t * 12 - i * 1.2 + s)]; }));
+  // 托盘上的熊在找平衡，皇帝跟着晃，冕旒和胡子被风吹向后
+  tray.r = [.04 * wob, 0, .03 * wob2];
+  bear.r = [-.03 * sin(t * 1.7 - .5), 0, -.022 * sin(t * 1.25 + .5)];
+  bearLegs.forEach((n, i) => { n.r = [0, 0, .045 * sin(t * 15 + i * 1.7) * (.5 + .5 * abs(wob))]; });
+  bearHead.r = [0, .28 * sin(t * .6), -.28 + .08 * sin(t * .9)];
+  emp.r = [.035 * sin(t * 1.7 - 1), 0, .025 * sin(t * 1.25)];
+  empHead.r = [0, .14 * sin(t * .45 + 1), .04];
+  beard.r = [0, 0, -.3 + .09 * sin(t * 7)];
+  beads.forEach((n, i) => { n.r = [.1 * sin(t * 3.1 + i), 0, -.32 + .12 * sin(t * 5 + i * .9)]; });
+  // 糖果环
+  for (const c of candies) {
+    const a = t * c.w + c.i / c.ring * TAU;
+    c.n.p = [-.05 + c.R * cos(a), c.y + .1 * sin(a * 2 + t), c.R * sin(a)];
+    c.n.r = [0, t * 2.2 + c.i, 0];
+    const k = c.key ? 1.45 + .2 * sin(t * 5) : 1 + .25 * shout;
+    c.n.s = [k, k, k]; c.n.glow = c.key ? .55 + .25 * sin(t * 5) : .12;
+  }
+  // 云向后流，风线更快
+  for (const n of clouds) { n.p[0] -= 15 * dt; if (n.p[0] < -165) n.p[0] += 330; }
+  for (const n of streaks) { n.p[0] -= 70 * dt; if (n.p[0] < -45) { n.p[0] += 90; n.p[1] = -2 + random() * 11; n.p[2] = -10 + random() * 24; } }
+}
+
+/* =====================================================================
+   五、导演：分镜表、运镜、字幕、喊话气泡、交互
+   ===================================================================== */
+const wp = (node, p = [0, 0, 0]) => M4.pt(node.world, p);                 // 节点上的点 → 世界坐标
+const SHOTS = [
+  { name: '大远景 · 建立镜头', dur: 6, sub: '云海之上，“筋斗云号”双翼机正在巡航。',
+    cam: u => ({ eye: V.lerp([27, 2.2, 21], [17, 3.2, 13], u), at: [0, 3.6, 1], fov: 32 }) },
+  { name: '特写 · 机长孙悟空', dur: 5, sub: '机长孙悟空，今天不翻筋斗，改开飞机。他手搭凉棚，回头看机翼上的乘客。',
+    cam: u => ({ eye: V.lerp([.95, 2.75, 1.35], [.55, 2.45, 1.0], u), at: V.add(wp(wkHead), [0, -.05, 0]), fov: 30 }) },
+  { name: '升降镜头 · 从车轮摇到皇冠', dur: 9, sub: '右上机翼：鹈鹕骑着自行车，一只翅膀托着北极熊，熊背上端坐秦始皇。',
+    cam: u => { const y = lerp(1.9, 6.25, ss(.08, .92, u)); return { eye: [4.7 + .5 * u, y + .3, 6.8 + .3 * u], at: [.5, y, 2.3], fov: 25 }; } },
+  { name: '特写 · 鹈鹕喊出答案', dur: 6, sub: '鹈鹕：“糖果题的答案是——21！”', shout: [1.1, 5.2], say: true,
+    cam: u => { const h = wp(head, [.25, .02, 0]); return { eye: V.add(h, [1.9 - .3 * u, .1, 1.35]), at: h, fov: 30 }; } },
+  { name: '仰拍 · 叠罗汉全身', dur: 5, sub: '飞机上是车，车上是鸟，鸟上是熊，熊上是始皇帝。',
+    cam: u => ({ eye: [8.6 - u, .2 + .6 * u, 6.6 + u], at: [.3, 3.7, 2.1], fov: 44 }) },
+  { name: '环绕镜头 · 解题', dur: 14, shout: [9.5, 13.4],
+    sub: ['形状靠手感摸得出来，所以可以挑着拿。', '摸 12 颗五角星：里面必有桃子味，也必有苹果味。', '再摸 9 颗圆形：里面必有一颗不是西瓜味。',
+      '那颗圆的若是苹果味，配星形桃子；若是桃子味，配星形苹果。', '12 + 9 = 21，少一颗都不保险。'],
+    cam: u => { const a = lerp(-.25, 1.75, ss(0, 1, u)); return { eye: [.4 + 12.5 * cos(a), 4.6 + 1.6 * u, 2 + 12.5 * sin(a)], at: [.4, 3.7, 1.8], fov: 36 }; } },
+  { name: '逆光拉远 · 收尾', dur: 7, sub: ['一摞人马，迎着太阳飞远。', '卡！这条过了。'],
+    cam: u => ({ eye: V.lerp([-7.5, 1.5, -1.2], [-24, -1.2, -6], ss(0, 1, u)), at: [2.5, 4.2, 2.6], fov: 46 }) }
+];
+const TOTAL = SHOTS.reduce((s, x) => s + x.dur, 0), ORBIT_C = [.4, 3.6, 1.9];
+const D = { t: 0, time: 0, idx: -1, free: false, paused: false, take: 1, slate: performance.now() + 1700, yaw: .75, pitch: .16, dist: 13,
+  shout: 0, shoutOn: false, phrase: 0, sound: false };
+const PHRASES = ['21！', '二十一！', '12 + 9 = 21！', '就是 21！'];
+const ui = { tc: $('tc'), shot: $('shotName'), sub: $('sub'), bub: $('bubble'), btx: $('bubbleTxt'), slate: $('slate'), take: $('take'),
+  list: $('shots'), bCam: $('bCam'), bShots: $('bShots'), bSnd: $('bSnd'), bPause: $('bPause') };
+SHOTS.forEach((s, i) => {
+  const d = document.createElement('div'); d.innerHTML = `<em>${String(i + 1).padStart(2, '0')}</em>${s.name}　${s.dur} 秒`;
+  d.onclick = () => { D.time = SHOTS.slice(0, i).reduce((a, x) => a + x.dur, 0) + .001; D.slate = 1; setFree(false); };
+  ui.list.appendChild(d); s.el = d;
+});
+function setFree(on, cam) {
+  if (on && !D.free && cam) {                                           // 从当前导演机位无缝接管
+    const d = V.sub(cam.eye, ORBIT_C); D.dist = clamp(V.len(d), 3.5, 40); D.yaw = atan2(d[2], d[0]); D.pitch = Math.asin(clamp(d[1] / V.len(d), -.3, .95));
+  }
+  D.free = on; document.body.classList.toggle('free', on);
+  ui.bCam.textContent = on ? '导演镜头' : '自由视角'; ui.bCam.classList.toggle('on', on);
+  if (on) ui.sub.textContent = '自由视角：拖动旋转，滚轮缩放。鹈鹕每隔几秒喊一次答案。'; else D.idx = -1;
+}
+let lastCam = null, drag = null;
+canvas.addEventListener('pointerdown', e => { drag = { x: e.clientX, y: e.clientY, moved: false }; canvas.setPointerCapture(e.pointerId); });
+canvas.addEventListener('pointermove', e => {
+  if (!drag) return;
+  const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+  if (!drag.moved && hypot(dx, dy) < 4) return;
+  if (!D.free) setFree(true, lastCam);
+  drag.moved = true; drag.x = e.clientX; drag.y = e.clientY;
+  D.yaw += dx * .006; D.pitch = clamp(D.pitch + dy * .005, -.3, 1.25);
+});
+canvas.addEventListener('pointerup', () => { drag = null; });
+canvas.addEventListener('wheel', e => {
+  e.preventDefault(); if (!D.free) setFree(true, lastCam);
+  D.dist = clamp(D.dist * exp(e.deltaY * .001), 3.5, 40);
+}, { passive: false });
+ui.bCam.onclick = () => setFree(!D.free, lastCam);
+ui.bShots.onclick = () => { ui.list.classList.toggle('open'); ui.bShots.classList.toggle('on'); };
+ui.bPause.onclick = () => { D.paused = !D.paused; ui.bPause.textContent = D.paused ? '继续' : '暂停'; ui.bPause.classList.toggle('on', D.paused); };
+addEventListener('keydown', e => {                                      // 空格暂停，F 切视角，数字键跳到对应镜头
+  if (e.code === 'Space') { e.preventDefault(); ui.bPause.onclick(); }
+  else if (e.key === 'f' || e.key === 'F') ui.bCam.onclick();
+  else if (e.key >= '1' && e.key <= String(SHOTS.length)) SHOTS[+e.key - 1].el.onclick();
+});
+
+/* ---------- 声音：发动机、风声，鹈鹕用语音合成喊话 ---------- */
+let AC = null, master = null;
+ui.bSnd.onclick = () => {
+  D.sound = !D.sound; ui.bSnd.classList.toggle('on', D.sound);
+  try {
+    if (!AC) {
+      AC = new (window.AudioContext || window.webkitAudioContext)(); master = AC.createGain(); master.connect(AC.destination);
+      const lp = AC.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 240; lp.connect(master);
+      const trem = AC.createGain(); trem.gain.value = .05; trem.connect(lp);
+      for (const fq of [55, 82.5, 110.6]) { const o = AC.createOscillator(); o.type = 'sawtooth'; o.frequency.value = fq; o.connect(trem); o.start(); }
+      const lfo = AC.createOscillator(), lg = AC.createGain(); lfo.frequency.value = 23; lg.gain.value = .02; lfo.connect(lg); lg.connect(trem.gain); lfo.start();
+      const buf = AC.createBuffer(1, AC.sampleRate * 2, AC.sampleRate), ch = buf.getChannelData(0);
+      for (let i = 0; i < ch.length; i++) ch[i] = random() * 2 - 1;
+      const ns = AC.createBufferSource(); ns.buffer = buf; ns.loop = true;
+      const bp = AC.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 700; bp.Q.value = .6;
+      const ng = AC.createGain(); ng.gain.value = .035; ns.connect(bp); bp.connect(ng); ng.connect(master); ns.start();
+    }
+    AC.resume(); master.gain.value = D.sound ? 1 : 0;
+    if (!D.sound && window.speechSynthesis) speechSynthesis.cancel();
+  } catch (err) { /* 没有声音不影响画面 */ }
+};
+function say(text) {
+  if (!D.sound || !window.speechSynthesis) return;
+  try { const u = new SpeechSynthesisUtterance(text); u.lang = 'zh-CN'; u.pitch = 1.7; u.rate = 1.15; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch (err) {}
+}
+
+/* ---------- 主循环 ---------- */
+let last = performance.now();
+function frame(now) {
+  const dt = clamp((now - last) / 1000, 0, .1); last = now;
+  if (D.slate && now >= D.slate) { D.slate = 0; ui.slate.classList.add('off'); }   // 片头字卡按真实时间收起
+  if (!D.paused) {
+    D.t += dt;
+    if (!D.slate && !D.free) D.time += dt;
+    if (D.time >= TOTAL) { D.time = 0; D.take++; D.slate = now + 1300; ui.take.textContent = `第 ${D.take} 条`; ui.slate.classList.remove('off'); D.idx = -1; }
+  }
+  // 当前镜头
+  let i = 0, lt = D.time;
+  while (i < SHOTS.length - 1 && lt >= SHOTS[i].dur) lt -= SHOTS[i++].dur;
+  const S = SHOTS[i];
+  // 喊话包络：导演模式按镜头安排，其它时候每 5 秒喊一次
+  let env;
+  if (!D.free && S.shout) env = ss(S.shout[0], S.shout[0] + .2, lt) * (1 - ss(S.shout[1] - .3, S.shout[1], lt));
+  else { const p = D.t % 5; env = ss(.3, .45, p) * (1 - ss(1.9, 2.2, p)); }
+  if (env > .05 && !D.shoutOn) { D.shoutOn = true; D.phrase = (D.phrase + 1) % PHRASES.length; ui.btx.textContent = PHRASES[D.phrase]; if (!D.free && S.say) say('答案是，二十一！'); }
+  if (env <= .05) D.shoutOn = false;
+  if (!D.paused) animate(D.t, dt, env);
+  root.update(null, true);
+  // 机位
+  let cam;
+  if (D.free) {
+    const cp = cos(D.pitch);
+    cam = { eye: V.add(ORBIT_C, [D.dist * cp * cos(D.yaw), D.dist * sin(D.pitch), D.dist * cp * sin(D.yaw)]), at: ORBIT_C, fov: 38 };
+  } else {
+    cam = S.cam(lt / S.dur);
+    const k = .03 + .05 * env;                                           // 手持感
+    cam.eye = V.add(cam.eye, [k * sin(D.t * 1.3), k * sin(D.t * 1.9 + 1), k * sin(D.t * 1.6 + 2)]);
+    const subs = Array.isArray(S.sub) ? S.sub : [S.sub], si = min(subs.length - 1, floor(lt / S.dur * subs.length));
+    if (i !== D.idx || si !== D.subIdx) {
+      D.idx = i; D.subIdx = si; ui.shot.textContent = `镜 ${i + 1}/${SHOTS.length} · ${S.name}`; ui.sub.textContent = subs[si];
+      SHOTS.forEach((s, j) => s.el.classList.toggle('cur', j === i));
+    }
+  }
+  if (D.free && ui.shot.textContent !== '自由视角') { ui.shot.textContent = '自由视角'; SHOTS.forEach(s => s.el.classList.remove('cur')); }
+  cam.focus = V.add(plane.p, [.3, 2.6, 1]);
+  render(cam); lastCam = cam;
+  // 时间码与喊话气泡
+  const fr = floor(D.t * 24), z2 = n => String(n).padStart(2, '0');
+  ui.tc.textContent = `${z2(floor(fr / 86400))}:${z2(floor(fr / 1440) % 60)}:${z2(floor(fr / 24) % 60)}:${z2(fr % 24)}`;
+  const p = wp(head, [.9, -.03, 0]), m = cam.VP;                        // 气泡挂在张开的嘴前面
+  const cw = m[3] * p[0] + m[7] * p[1] + m[11] * p[2] + m[15];
+  const sx = ((m[0] * p[0] + m[4] * p[1] + m[8] * p[2] + m[12]) / cw * .5 + .5) * innerWidth;
+  const sy = (.5 - (m[1] * p[0] + m[5] * p[1] + m[9] * p[2] + m[13]) / cw * .5) * innerHeight;
+  if (env > .05 && cw > .3 && sx > -.1 * innerWidth && sx < 1.05 * innerWidth && sy > -.15 * innerHeight && sy < 1.1 * innerHeight) {
+    ui.bub.style.fontSize = clamp(.36 * innerHeight / cw, 12, innerHeight * .062).toFixed(1) + 'px';
+    const bw = ui.bub.offsetWidth, bh = ui.bub.offsetHeight;             // 靠近画面边缘时把气泡夹回安全区
+    const bar = !D.free && innerWidth / innerHeight < 2.1 ? innerHeight * .09 : 0;
+    const top = bar + 50 + bh / 2, bx = clamp(sx + 18, 20, max(20, innerWidth - bw - 12)), by = clamp(sy, top, max(top, innerHeight - bar - bh / 2 - 8));
+    ui.bub.style.transform = `translate(${bx.toFixed(1)}px,${by.toFixed(1)}px) translate(0,-50%) scale(${(.55 + .45 * ss(0, .5, env) + .04 * sin(D.t * 15)).toFixed(3)})`;
+    ui.bub.style.opacity = min(1, env * 2.5).toFixed(2);
+  } else ui.bub.style.opacity = 0;
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
