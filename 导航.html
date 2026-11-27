@@ -30,7 +30,10 @@ h1{font-size:clamp(34px,6vw,72px);line-height:1.04;margin:.28em 0 .22em;font-wei
 .pv{position:relative;background:#0b0d14;min-height:120px;overflow:hidden}
 .pv img{width:100%;display:block;transition:transform .48s cubic-bezier(.22,1,.36,1)}
 .card:hover .pv img{transform:scale(1.045)}
-.ph{aspect-ratio:var(--r,4/3);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;padding:20px;text-align:center;color:rgba(255,255,255,.92);background:var(--g);transition:transform .48s cubic-bezier(.22,1,.36,1)}
+.ph{position:relative;aspect-ratio:var(--r,4/3);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;padding:24px;text-align:center;color:#f3f5fc;background:radial-gradient(circle at 22% 20%,color-mix(in srgb,var(--c1,#5eead4) 34%,transparent),transparent 58%),radial-gradient(circle at 82% 85%,color-mix(in srgb,var(--c2,#a78bfa) 30%,transparent),transparent 60%),linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px),#0b0e18;background-size:100% 100%,100% 100%,24px 24px,24px 24px,100% 100%;transition:transform .48s cubic-bezier(.22,1,.36,1)}
+.ph:before{content:"";position:absolute;width:136px;height:136px;border-radius:50%;border:1px solid rgba(255,255,255,.09);box-shadow:0 0 40px color-mix(in srgb,var(--c1,#5eead4) 28%,transparent);pointer-events:none}
+.ph:after{content:"3D INTERACTIVE";position:absolute;bottom:12px;right:14px;font-size:10px;letter-spacing:.2em;color:rgba(255,255,255,.38);font-weight:600}
+.ph span{position:relative;z-index:1;text-shadow:0 4px 24px rgba(0,0,0,.65);line-height:1.3}
 .card:hover .ph{transform:scale(1.03)}
 .badge{position:absolute;top:10px;left:10px;z-index:3;font-size:11.5px;padding:4px 10px;border-radius:999px;background:rgba(7,8,13,.72);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.1)}
 .badge.l{background:linear-gradient(90deg,#5eead4,#2dd4bf);color:#032b26;font-weight:700;border-color:transparent;box-shadow:0 4px 14px -4px rgba(94,234,212,.65)}.badge.cn{background:linear-gradient(90deg,#ff5f6d,#ff7a59);color:#fff;font-weight:700;border-color:transparent}
@@ -46,7 +49,7 @@ footer{color:var(--dim);font-size:12px;text-align:center;padding:30px 4vw 60px;l
 </style></head><body>
 <section class="hero"><div><div class="eyebrow">Fable 5.2 · 立体幻境展馆</div>
 <h1>立体幻境展馆</h1>
-<div class="lead">全网最火的 AI 手搓 3D 网页作品。<b style="color:#5eead4">绿色「离线」</b>的已经打包成单个 HTML，断网双击就能玩；其余是在线作品，点开直达。</div>
+<div class="lead">全网最火的 AI 手搓 3D 网页作品。<b style="color:#5eead4">绿色「离线」</b>的已经打包成单个 HTML，点击即可直接打开体验（也支持保存本地离线游玩）；其余是在线作品，点开直达。</div>
 <div class="stats"><div><b id="n1"></b><span>离线单文件</span></div><div><b id="n2"></b><span>在线作品</span></div><div><b>1.4M</b><span>最出圈的那个 FPS</span></div></div></div></section>
 <div class="bar" id="bar"><span class="cnt" id="cnt"></span><input class="search" id="q" placeholder="搜作品、作者…"></div>
 <div class="grid" id="grid"></div>
@@ -64,7 +67,7 @@ const pal=[["#ff7a59","#7b2ff7"],["#00c6ff","#0072ff"],["#f7971e","#ffd200"],["#
 const ratios=["4/3","1/1","3/4","16/10","5/4"];
 function h(s){let x=0;for(const c of s)x=(x*31+c.charCodeAt(0))|0;return Math.abs(x)}
 const esc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-function ph(c){const k=h(c.title),p=pal[k%pal.length];return `<div class="ph" style="--g:linear-gradient(135deg,${p[0]},${p[1]});--r:${ratios[k%ratios.length]}">${esc(c.title.slice(0,14))}</div>`}
+function ph(c){const k=h(c.title),p=pal[k%pal.length];return `<div class="ph" style="--c1:${p[0]};--c2:${p[1]};--r:${ratios[k%ratios.length]}"><span>${esc(c.title.slice(0,16))}</span></div>`}
 function card(c){
  const img=c.img?`<img loading="lazy" src="${c.img}" ${c.gif?`data-gif="${c.gif}"`:''} alt="">`:ph(c);
  const badge=c.kind=='local'?'<span class="badge l">离线 · 单文件</span>':(c.cn?'<span class="badge cn">中文圈热传</span>':`<span class="badge">${esc(c.cat)}</span>`);
@@ -72,7 +75,7 @@ function card(c){
  return `<a class="card ${c.kind}" href="${esc(c.href)}" target="_blank" rel="noopener"><div class="pv">${img}${badge}${like}</div>
  <div class="bd"><h3>${esc(c.title)}</h3><div class="sub">${esc(c.sub)}${c.author?' · @'+esc(c.author):''}</div><p>${esc(c.desc)}</p>
  ${c.note?`<div class="note">${esc(c.note)}</div>`:''}
- <div class="meta"><span>${c.kind=='local'?esc(c.size):''}</span><span class="go">${c.kind=='local'?'双击打开 →':'在线玩 →'}</span></div></div></a>`}
+ <div class="meta"><span>${c.kind=='local'?esc(c.size):''}</span><span class="go">${c.kind=='local'?'点击打开 →':'在线玩 →'}</span></div></div></a>`}
 function draw(){const t=q.value.trim().toLowerCase();
  const L=D.filter(c=>(cur=="全部"||(cur=="离线"&&c.kind=='local')||(cur=="中文圈"&&c.cn)||c.cat==cur)&&(!t||(c.title+c.sub+c.desc+c.author).toLowerCase().includes(t)));
  cnt.textContent=`${L.length} / ${D.length}`;
